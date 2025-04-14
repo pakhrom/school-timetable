@@ -22,244 +22,385 @@
 	];
 
 	const timetable = {
-		class: '10Б',
+		id: 'ttb-1',
+		title: '10Б',
 		days: [
 			[
 				{
+					id: 'sub-1',
 					title: 'Информатика',
+					shortTitle: 'Информ.',
 					groups: [
-						{ teacher: 'Поздняков А.В.', classroom: '307' },
-						{ teacher: 'Безруких О.Ю.', classroom: '203л' }
+						{ id: 'gro-1', teacher: 'Поздняков А.В.', classroom: '307' },
+						{ id: 'gro-2', teacher: 'Безруких О.Ю.', classroom: '203л' }
 					]
 				},
 				{
+					id: 'sub-1',
 					title: 'Информатика',
+					shortTitle: 'Информ.',
 					groups: [
-						{ teacher: 'Поздняков А.В.', classroom: '307' },
-						{ teacher: 'Безруких О.Ю.', classroom: '203л' }
+						{ id: 'gro-1', teacher: 'Поздняков А.В.', classroom: '307' },
+						{ id: 'gro-2', teacher: 'Безруких О.Ю.', classroom: '203л' }
 					]
 				},
 				{
+					id: 'sub-3',
 					title: 'Литература',
-					groups: [{ teacher: 'Штаркер С.А.', classroom: '106' }]
+					shortTitle: '',
+					groups: [{ id: 'gro-3', teacher: 'Штаркер С.А.', classroom: '106' }]
 				},
 				{
+					id: 'sub-3',
 					title: 'Литература',
-					groups: [{ teacher: 'Штаркер С.А.', classroom: '106' }]
+					shortTitle: '',
+					groups: [{ id: 'gro-3', teacher: 'Штаркер С.А.', classroom: '106' }]
 				},
 				{
+					id: 'sub-4',
 					title: 'Биология',
-					groups: [{ teacher: 'Заворохина М.В.', classroom: '405' }]
+					shortTitle: '',
+					groups: [{ id: 'gro-4', teacher: 'Заворохина М.В.', classroom: '405' }]
 				},
 				{
+					id: 'sub-5',
 					title: 'Физика',
-					groups: [{ teacher: 'Прокофьева Л.В.', classroom: '407' }]
+					shortTitle: '',
+					groups: [{ id: 'gro-5', teacher: 'Прокофьева Л.В.', classroom: '407' }]
 				}
 			],
 			[
 				{
+					id: 'sub-9',
 					title: 'Математика',
-					groups: [{ teacher: 'Журавлева Е.Ю.', classroom: '105' }]
+					shortTitle: '',
+					groups: [{ id: 'gro-9', teacher: 'Журавлева Е.Ю.', classroom: '105' }]
 				},
 				{
+					id: 'sub-9',
 					title: 'Математика',
-					groups: [{ teacher: 'Журавлева Е.Ю.', classroom: '105' }]
+					shortTitle: '',
+					groups: [{ id: 'gro-9', teacher: 'Журавлева Е.Ю.', classroom: '105' }]
 				},
 				{
+					id: 'sub-9',
 					title: 'Математика',
-					groups: [{ teacher: 'Журавлева Е.Ю.', classroom: '105' }]
+					shortTitle: '',
+					groups: [{ id: 'gro-9', teacher: 'Журавлева Е.Ю.', classroom: '105' }]
 				},
 				{
+					id: 'sub-5',
 					title: 'Физика',
-					groups: [{ teacher: 'Прокофьева Л.В.', classroom: '407' }]
+					shortTitle: '',
+					groups: [{ id: 'gro-5', teacher: 'Прокофьева Л.В.', classroom: '407' }]
 				},
 				{
+					id: 'sub-5',
 					title: 'Физика',
-					groups: [{ teacher: 'Прокофьева Л.В.', classroom: '407' }]
+					shortTitle: '',
+					groups: [{ id: 'gro-5', teacher: 'Прокофьева Л.В.', classroom: '407' }]
 				},
 				{
+					id: 'sub-5',
 					title: 'Физика',
-					groups: [{ teacher: 'Прокофьева Л.В.', classroom: '407' }]
+					shortTitle: '',
+					groups: [{ id: 'gro-5', teacher: 'Прокофьева Л.В.', classroom: '407' }]
 				},
 				{
+					id: 'sub-15',
 					title: 'Обществознание',
-					groups: [{ teacher: 'Халикова З.Г.', classroom: '405' }]
+					shortTitle: 'Обществ.',
+					groups: [{ id: 'gro-14', teacher: 'Халикова З.Г.', classroom: '405' }]
 				},
 				null,
 				{
+					id: 'sub-16',
 					title: 'Астрономия ВНД',
-					groups: [{ teacher: '', classroom: '212л' }]
+					shortTitle: 'Астро. ВНД',
+					groups: [{ id: 'gro-15', teacher: '', classroom: '212л' }]
 				},
 				{
+					id: 'sub-16',
 					title: 'Астрономия ВНД',
-					groups: [{ teacher: '', classroom: '212л' }]
+					shortTitle: 'Астро. ВНД',
+					groups: [{ id: 'gro-15', teacher: '', classroom: '212л' }]
 				}
 			],
 			[
 				{
+					id: 'sub-5',
 					title: 'Физика',
-					groups: [{ teacher: 'Прокофьева Л.В.', classroom: '407' }]
+					shortTitle: '',
+					groups: [{ id: 'gro-5', teacher: 'Прокофьева Л.В.', classroom: '407' }]
 				},
 				{
+					id: 'sub-5',
 					title: 'Физика',
-					groups: [{ teacher: 'Прокофьева Л.В.', classroom: '407' }]
+					shortTitle: '',
+					groups: [{ id: 'gro-5', teacher: 'Прокофьева Л.В.', classroom: '407' }]
 				},
 				{
+					id: 'sub-9',
 					title: 'Математика',
-					groups: [{ teacher: 'Журавлева Е.Ю.', classroom: '105' }]
+					shortTitle: '',
+					groups: [{ id: 'gro-10', teacher: 'Журавлева Е.Ю.', classroom: '302' }]
 				},
 				{
+					id: 'sub-9',
 					title: 'Математика',
-					groups: [{ teacher: 'Журавлева Е.Ю.', classroom: '105' }]
+					shortTitle: '',
+					groups: [{ id: 'gro-10', teacher: 'Журавлева Е.Ю.', classroom: '302' }]
 				},
 				{
+					id: 'sub-14',
 					title: 'Английский язык',
+					shortTitle: 'Англ. яз.',
 					groups: [
-						{ teacher: 'Артемова И.Ю.', classroom: '404' },
-						{ teacher: 'Сергеева О.Е.', classroom: '203' }
+						{ id: 'gro-16', teacher: 'Артемова И.Ю.', classroom: '404' },
+						{ id: 'gro-17', teacher: 'Сергеева О.Е.', classroom: '203' }
 					]
 				},
 				{
+					id: 'sub-14',
 					title: 'Английский язык',
+					shortTitle: 'Англ. яз.',
 					groups: [
-						{ teacher: 'Артемова И.Ю.', classroom: '404' },
-						{ teacher: 'Сергеева О.Е.', classroom: '203' }
+						{ id: 'gro-16', teacher: 'Артемова И.Ю.', classroom: '404' },
+						{ id: 'gro-17', teacher: 'Сергеева О.Е.', classroom: '203' }
 					]
 				},
 				{
+					id: 'sub-1',
 					title: 'Информатика',
+					shortTitle: 'Информ.',
 					groups: [
-						{ teacher: 'Поздняков А.В.', classroom: '307' },
-						{ teacher: 'Безруких О.Ю.', classroom: '203л' }
+						{ id: 'gro-1', teacher: 'Поздняков А.В.', classroom: '307' },
+						{ id: 'gro-2', teacher: 'Безруких О.Ю.', classroom: '203л' }
 					]
 				},
 				{
+					id: 'sub-1',
 					title: 'Информатика',
+					shortTitle: 'Информ.',
 					groups: [
-						{ teacher: 'Поздняков А.В.', classroom: '307' },
-						{ teacher: 'Безруких О.Ю.', classroom: '203л' }
+						{ id: 'gro-1', teacher: 'Поздняков А.В.', classroom: '307' },
+						{ id: 'gro-2', teacher: 'Безруких О.Ю.', classroom: '203л' }
 					]
 				},
 				{
+					id: 'sub-17',
 					title: 'Черчение',
-					groups: [{ teacher: 'Дмитриенко Г.А.', classroom: '301' }]
+					shortTitle: '',
+					groups: [{ id: 'gro-18', teacher: 'Дмитриенко Г.А.', classroom: '301' }]
 				},
 				{
+					id: 'sub-17',
 					title: 'Черчение',
-					groups: [{ teacher: 'Дмитриенко Г.А.', classroom: '301' }]
+					shortTitle: '',
+					groups: [{ id: 'gro-18', teacher: 'Дмитриенко Г.А.', classroom: '301' }]
 				}
 			],
 			[
-				{ title: 'ОБЗР', groups: [{ teacher: 'Бруннер А.Н.', classroom: '207л' }] },
+				{ title: 'ОБЗР', groups: [{ id: 'gro-19', teacher: 'Бруннер А.Н.', classroom: '207л' }] },
 				{
+					id: 'sub-3',
 					title: 'Литература',
-					groups: [{ teacher: 'Штаркер С.А.', classroom: '106' }]
+					shortTitle: '',
+					groups: [{ id: 'gro-3', teacher: 'Штаркер С.А.', classroom: '106' }]
 				},
 				{
+					id: 'sub-18',
 					title: 'Русский язык',
-					groups: [{ teacher: 'Штаркер С.А.', classroom: '106' }]
+					shortTitle: 'Рус. язык',
+					groups: [{ id: 'gro-20', teacher: 'Штаркер С.А.', classroom: '106' }]
 				},
 				{
+					id: 'sub-18',
 					title: 'Русский язык',
-					groups: [{ teacher: 'Штаркер С.А.', classroom: '106' }]
+					shortTitle: 'Рус. язык',
+					groups: [{ id: 'gro-20', teacher: 'Штаркер С.А.', classroom: '106' }]
 				},
 				{
+					id: 'sub-11',
 					title: 'История',
-					groups: [{ teacher: 'Турчанов Е.В.', classroom: '303' }]
+					shortTitle: '',
+					groups: [{ id: 'gro-22', teacher: 'Турчанов Е.В.', classroom: '303' }]
 				},
 				{
+					id: 'sub-8',
 					title: 'Физическая культура',
-					groups: [{ teacher: '', classroom: 'СЗ' }]
+					shortTitle: 'Физ. культура',
+					groups: [{ id: 'gro-8', teacher: '', classroom: 'СЗ' }]
 				},
 				{
+					id: 'sub-12',
 					title: 'Химия',
-					groups: [{ teacher: 'Селезова Е.В.', classroom: '406' }]
+					shortTitle: '',
+					groups: [{ id: 'gro-21', teacher: 'Селезова Е.В.', classroom: '406' }]
 				},
 				{
+					id: 'sub-13',
 					title: 'Проектная деятельность',
-					groups: [{ teacher: 'Абакумов А.Д.', classroom: '105' }]
+					shortTitle: 'Проект. деят.',
+					groups: [{ id: 'gro-23', teacher: 'Абакумов А.Д.', classroom: '105' }]
 				}
 			],
 			[
 				{
+					id: 'sub-8',
 					title: 'Физическая культура',
-					groups: [{ teacher: '', classroom: 'СЗ' }]
+					shortTitle: 'Физ. культура',
+					groups: [{ id: 'gro-8', teacher: '', classroom: 'СЗ' }]
 				},
 				{
+					id: 'sub-11',
 					title: 'История',
-					groups: [{ teacher: 'Турчанов Е.В.', classroom: '303' }]
+					shortTitle: '',
+					groups: [{ id: 'gro-22', teacher: 'Турчанов Е.В.', classroom: '303' }]
 				},
 				{
+					id: 'sub-14',
 					title: 'Английский язык',
+					shortTitle: 'Англ. яз.',
 					groups: [
-						{ teacher: 'Артемова И.Ю.', classroom: '404' },
-						{ teacher: 'Сергеева О.Е.', classroom: '203' }
+						{ id: 'gro-16', teacher: 'Артемова И.Ю.', classroom: '404' },
+						{ id: 'gro-17', teacher: 'Сергеева О.Е.', classroom: '203' }
 					]
 				},
 				{
+					id: 'sub-9',
 					title: 'Математика',
-					groups: [{ teacher: 'Журавлева Е.Ю.', classroom: '105' }]
+					shortTitle: '',
+					groups: [{ id: 'gro-11', teacher: 'Журавлева Е.Ю.', classroom: '106' }]
 				},
 				{
+					id: 'sub-9',
 					title: 'Математика',
-					groups: [{ teacher: 'Журавлева Е.Ю.', classroom: '105' }]
+					shortTitle: '',
+					groups: [{ id: 'gro-11', teacher: 'Журавлева Е.Ю.', classroom: '106' }]
 				},
 				{
+					id: 'sub-9',
 					title: 'Математика',
-					groups: [{ teacher: 'Журавлева Е.Ю.', classroom: '105' }]
+					shortTitle: '',
+					groups: [{ id: 'gro-11', teacher: 'Журавлева Е.Ю.', classroom: '106' }]
 				},
 				{
+					id: 'sub-2',
 					title: 'Информатика СК',
+					shortTitle: 'Информ. СК',
 					groups: [
-						{ teacher: 'Поздняков А.В.', classroom: '307' },
-						{ teacher: 'Безруких О.Ю.', classroom: '203л' }
+						{ id: 'gro-1', teacher: 'Поздняков А.В.', classroom: '307' },
+						{ id: 'gro-2', teacher: 'Безруких О.Ю.', classroom: '203л' }
 					]
 				},
 				{
+					id: 'sub-2',
 					title: 'Информатика СК',
+					shortTitle: 'Информ. СК',
 					groups: [
-						{ teacher: 'Поздняков А.В.', classroom: '307' },
-						{ teacher: 'Безруких О.Ю.', classroom: '203л' }
+						{ id: 'gro-1', teacher: 'Поздняков А.В.', classroom: '307' },
+						{ id: 'gro-2', teacher: 'Безруких О.Ю.', classroom: '203л' }
 					]
 				},
 				{
+					id: 'sub-10',
 					title: 'Математика ВНД',
-					groups: [{ teacher: 'Журавлева Е.Ю.', classroom: '105' }]
+					shortTitle: '',
+					groups: [{ id: 'gro-12', teacher: 'Журавлева Е.Ю.', classroom: '105' }]
 				},
 				{
+					id: 'sub-10',
 					title: 'Математика ВНД',
-					groups: [{ teacher: 'Журавлева Е.Ю.', classroom: '105' }]
+					shortTitle: '',
+					groups: [{ id: 'gro-12', teacher: 'Журавлева Е.Ю.', classroom: '105' }]
 				}
 			],
 			[
 				{
+					id: 'sub-6',
 					title: 'Билет в будущее',
-					groups: [{ teacher: 'Прокофьева Л.В.', classroom: '407' }]
+					shortTitle: 'Билет в буд.',
+					groups: [{ id: 'gro-7', teacher: 'Прокофьева Л.В.', classroom: '407' }]
 				},
 				{
+					id: 'sub-7',
 					title: 'Физика ВНД',
-					groups: [{ teacher: 'Прокофьева Л.В.', classroom: '407' }]
+					shortTitle: '',
+					groups: [{ id: 'gro-6', teacher: 'Прокофьева Л.В.', classroom: '407' }]
 				},
 				{
+					id: 'sub-7',
 					title: 'Физика ВНД',
-					groups: [{ teacher: 'Прокофьева Л.В.', classroom: '407' }]
+					shortTitle: '',
+					groups: [{ id: 'gro-6', teacher: 'Прокофьева Л.В.', classroom: '407' }]
 				},
 				{
+					id: 'sub-8',
 					title: 'Физическая культура',
-					groups: [{ teacher: '', classroom: 'СЗ' }]
+					shortTitle: 'Физ. культура',
+					groups: [{ id: 'gro-8', teacher: '', classroom: 'СЗ' }]
 				},
 				{
 					title: 'География',
-					groups: [{ teacher: 'Лемешкова В.В.', classroom: '403' }]
+					groups: [{ id: 'gro-13', teacher: 'Лемешкова В.В.', classroom: '403' }]
 				},
 				{
+					id: 'sub-15',
 					title: 'Обществознание',
-					groups: [{ teacher: 'Халикова З.Г.', classroom: '405' }]
+					shortTitle: 'Обществ.',
+					groups: [{ id: 'gro-14', teacher: 'Халикова З.Г.', classroom: '405' }]
 				}
 			]
 		],
 		lastUpdated: new Date(2024, 11, 17)
 	};
+	let subjectsWithMultipleGroups: any[] = [];
+	let subjectsWithMultipleGroupsIds: string[] = [];
+
+	timetable.days.forEach((day) => {
+		day.forEach((lesson) => {
+			if (
+				lesson &&
+				lesson.id &&
+				!subjectsWithMultipleGroupsIds.includes(lesson.id) &&
+				lesson.groups.length > 1
+			) {
+				if (lesson.id) subjectsWithMultipleGroupsIds.push(lesson.id);
+				subjectsWithMultipleGroups.push(lesson);
+			}
+		});
+	});
+
+	const replacementsReturned = [
+		{
+			id: 'rep-1',
+			date: '2025-04-15T11:17:55+07:00',
+			groups: [
+				{
+					replaced: 'gro-5',
+					replacement: ''
+				}
+			]
+		},
+		{
+			id: 'rep-2',
+			date: '2025-04-14T11:17:55+07:00',
+			groups: [
+				{
+					replaced: 'gro-2',
+					replacement: 'gro-1'
+				}
+			]
+		}
+	];
+	let replacements = [];
+	replacementsReturned.forEach((replacementReturned) => {
+		let replacementDate = new Date(replacementReturned.date);
+		replacements.push({
+			dayIndex: replacementDate.getDay() - 1
+		});
+	});
 
 	const DAYS_OF_THE_WEEK = ['', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
 	const LESSON_TIMING = [
@@ -308,25 +449,70 @@
 	const now = new Date();
 	const dayPrioritized =
 		now.getHours() >= 17 ? (now.getDay() > 5 ? 1 : now.getDay() + 1) : now.getDay(); // Sunday is 0, Monday is 1
-	const days: Array<HTMLDivElement | undefined> = [
+	const days: Array<HTMLDivElement | undefined> = $state([
 		undefined,
 		undefined,
 		undefined,
 		undefined,
 		undefined,
 		undefined
-	];
+	]);
 
 	let customizationDetailsElement: HTMLDetailsElement;
 	let showCustomizationDetails = $state(false);
 	let customizationChanged = $state(false);
 
-	let lessonInformationTitle = $state('');
 	let showLessonInformationModal = $state(false);
-	function openLessonInfo(lessonTitle: string) {
-		lessonInformationTitle = lessonTitle;
-		showLessonInformationModal = true;
+	let lessonInformation: any = $state({});
+	function openLessonInfo(dayIndex: number, lessonIndex: number) {
+		if (timetable.days[dayIndex][lessonIndex]) {
+			lessonInformation = timetable.days[dayIndex][lessonIndex];
+			showLessonInformationModal = true;
+		} else
+			console.error('User tried opening the lesson information modal with a non-existent lesson');
 	}
+
+	// SETTINGS
+	const defaultSettingsList = $state([
+		{
+			type: 'boolean',
+			id: 'full-subject-names',
+			title: 'Всегда показывать полные названия предметов',
+			defaultValue: false
+		}
+	]);
+
+	let settings: { id: string; value: boolean }[] = $state([]);
+	let settingsLoaded = localStorage.getItem('settings');
+	if (settingsLoaded) {
+		settings = JSON.parse(settingsLoaded);
+		defaultSettingsList.forEach((defaultSetting, defaultSettingIndex) => {
+			if (
+				defaultSetting.id !== settings[defaultSettingIndex].id ||
+				typeof defaultSetting.defaultValue !== typeof settings[defaultSettingIndex].value
+			) {
+				resetSettings();
+				console.log(
+					'Настройки были сброшены до значений по умолчанию по причине обновления списка настроек или повреждения сохраненных настроек'
+				);
+			}
+		});
+	} else {
+		resetSettings();
+	}
+
+	function resetSettings() {
+		settings = [];
+		defaultSettingsList.forEach((setting) => {
+			settings.push({ id: setting.id, value: setting.defaultValue });
+		});
+		saveSettings();
+	}
+	function saveSettings() {
+		localStorage.setItem('settings', JSON.stringify(settings));
+	}
+
+	let settingsDetailsElement: HTMLDetailsElement;
 
 	// DEBUG
 	let loadingToday = $state(true);
@@ -354,11 +540,51 @@
 </svelte:head>
 
 <main aria-labelledby="title">
+	<a href="https://shk24.ru">
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			width="24"
+			height="24"
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="2"
+			stroke-linecap="round"
+			stroke-linejoin="round"
+			class="icon icon-tabler icons-tabler-outline icon-tabler-school"
+		>
+			<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+			<path d="M22 9l-10 -4l-10 4l10 4l10 -4v6" />
+			<path d="M6 10.6v5.4a6 3 0 0 0 12 0v-5.4" />
+		</svg>
+		Электронный дневник
+	</a>
 	<h1 id="title">Расписание уроков</h1>
-	<img src="новодворская-кирпич.gif" alt="a" style="width: 100%" />
+	<!-- <img src="новодворская-кирпич.gif" alt="a" style="width: 100%" /> -->
+	<article class="warning">
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			width="24"
+			height="24"
+			viewBox="0 0 24 24"
+			fill="currentColor"
+			class="icon icon-tabler icons-tabler-filled icon-tabler-alert-triangle"
+		>
+			<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+			<path
+				d="M12 1.67c.955 0 1.845 .467 2.39 1.247l.105 .16l8.114 13.548a2.914 2.914 0 0 1 -2.307 4.363l-.195 .008h-16.225a2.914 2.914 0 0 1 -2.582 -4.2l.099 -.185l8.11 -13.538a2.914 2.914 0 0 1 2.491 -1.403zm.01 13.33l-.127 .007a1 1 0 0 0 0 1.986l.117 .007l.127 -.007a1 1 0 0 0 0 -1.986l-.117 -.007zm-.01 -7a1 1 0 0 0 -.993 .883l-.007 .117v4l.007 .117a1 1 0 0 0 1.986 0l.007 -.117v-4l-.007 -.117a1 1 0 0 0 -.993 -.883z"
+			/>
+		</svg>
+		<div>
+			Для правильного отображения местоположения уроков выберите свои группы уроков в разделе <a
+				href="#customization"
+				class="inline-link">«Расписание»</a
+			>.
+		</div>
+	</article>
 	<div class="grid">
 		{#each { length: 6 }, dayIndex}
-			<div class="day" bind:this={days[dayIndex]}>
+			<div class="day-container" bind:this={days[dayIndex]}>
 				<h4>
 					{#if now.getDay() - 1 === dayIndex}
 						<span class="day-marker">Сегодня •</span>
@@ -369,9 +595,9 @@
 					{/if}
 					{DAYS_OF_THE_WEEK[dayIndex + 1]}
 				</h4>
-				<hr class={dayPrioritized - 1 === dayIndex ? 'prioritized-day-line' : ''} />
+				<hr class={dayPrioritized - 1 === dayIndex ? 'prioritized-line' : ''} />
 				<article
-					class={dayPrioritized - 1 === dayIndex ? 'prioritized-day' : null}
+					class={['day', dayPrioritized - 1 === dayIndex ? 'prioritized' : null]}
 					aria-busy={loadingTimetable && !(dayPrioritized - 1 === dayIndex && !loadingToday)}
 				>
 					{#if !loadingTimetable || (dayPrioritized - 1 === dayIndex && !loadingToday)}
@@ -384,7 +610,7 @@
 							}}
 						>
 							{#each timetable.days[dayIndex] as lesson, lessonIndex}
-								<li>
+								<li class="lesson-container">
 									<div class="timing-container">
 										<span class="timing">
 											{LESSON_TIMING[lessonIndex][0][0]}:{LESSON_TIMING[lessonIndex][0][1] < 10
@@ -401,15 +627,25 @@
 										<button
 											class="lesson"
 											onclick={() => {
-												openLessonInfo(lesson.title);
+												openLessonInfo(dayIndex, lessonIndex);
 											}}
 										>
 											{lessonIndex + 1}.
-											{#if Math.floor(Math.random() * 10) === 1}
-												<mark> {lesson.title} <sup><b>{lesson.groups[0].classroom}</b></sup></mark>
-											{:else}
-												{lesson.title} <sup><b>{lesson.groups[0].classroom}</b></sup>
-											{/if}
+											<span class={false ? 'replacement' : ''}>
+												{#if settings[0].value === false && lesson.shortTitle}
+													{lesson.shortTitle}
+												{:else}
+													{lesson.title}
+												{/if}
+												<sup class="classroom">
+													<b>
+														{lesson.groups[0].classroom}{#if lesson.groups.length > 1}/...{/if}
+														<!-- {#each lesson.groups as group, groupIndex}
+															{group.classroom}{#if groupIndex !== lesson.groups.length - 1}/{/if}
+														{/each} -->
+													</b>
+												</sup>
+											</span>
 										</button>
 									{:else}
 										<button class="lesson" disabled>
@@ -432,15 +668,13 @@
 			if (!customizationDetailsElement.open && customizationChanged) {
 				loadWebsite();
 			} else {
-				document.documentElement.scrollTo({
-					left: 0,
-					top: document.documentElement.scrollHeight - document.documentElement.clientHeight,
+				customizationDetailsElement.scrollIntoView({
 					behavior: 'smooth'
 				});
 			}
 		}}
 	>
-		<summary class={{ highlight: customizationChanged }}>
+		<summary class={{ highlight: customizationChanged }} id="customization">
 			{#if customizationChanged}
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -483,7 +717,7 @@
 			{/if}
 		</summary>
 		<label for="class">
-			Класс
+			<h5>Класс</h5>
 			<select
 				name="class"
 				id="class"
@@ -496,14 +730,65 @@
 				{/each}
 			</select>
 		</label>
+		<h5>Группы предметов</h5>
+		{#each subjectsWithMultipleGroups as subject}
+			<article>
+				<h6>{subject.title}</h6>
+				<fieldset>
+					<legend>Выберите свою группу</legend>
+					{#each subject.groups as group}
+						<label>
+							<input
+								type="radio"
+								name={subject.id}
+								onchange={() => {
+									customizationChanged = true;
+								}}
+							/>
+							{group.teacher} ➔ <b>{group.classroom}</b>
+						</label>
+					{/each}
+				</fieldset>
+			</article>
+		{/each}
+
+		{#if customizationChanged}
+			<button
+				type="button"
+				class="wide"
+				onclick={() => {
+					customizationDetailsElement.open = false;
+				}}
+			>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					width="24"
+					height="24"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					class="icon icon-tabler icons-tabler-outline icon-tabler-device-floppy"
+				>
+					<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+					<path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2" />
+					<path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+					<path d="M14 4l0 4l-6 0l0 -4" />
+				</svg>
+				Сохранить изменения
+			</button>
+		{/if}
 	</details>
+
 	<details
+		bind:this={settingsDetailsElement}
 		ontoggle={() => {
-			document.documentElement.scrollTo({
-				left: 0,
-				top: document.documentElement.scrollHeight - document.documentElement.clientHeight,
-				behavior: 'smooth'
-			});
+			if (settingsDetailsElement.open)
+				settingsDetailsElement.scrollIntoView({
+					behavior: 'smooth'
+				});
 		}}
 	>
 		<summary>
@@ -529,7 +814,22 @@
 			</svg>
 			Настройки
 		</summary>
-		А
+		{#each defaultSettingsList as settingInfo, settingIndex}
+			<label>
+				{#if settingInfo.type === 'boolean'}
+					<input
+						type="checkbox"
+						name={settingInfo.id}
+						id={settingInfo.id}
+						onchange={() => {
+							saveSettings();
+						}}
+						bind:checked={settings[settingIndex].value}
+					/>
+					{settingInfo.title}
+				{/if}
+			</label>
+		{/each}
 	</details>
 </main>
 
@@ -593,30 +893,56 @@
 </footer>
 
 <ModalAlert bind:showModal={showLessonInformationModal}>
-	<header>{lessonInformationTitle}</header>
-	Информация о уроке
+	<header>{lessonInformation.title}</header>
+	Группы:
+	<ul>
+		{#each lessonInformation.groups as group}
+			<li>
+				<div>
+					{group.teacher} ➔ <b>{group.classroom}</b>
+				</div>
+			</li>
+		{/each}
+	</ul>
 </ModalAlert>
 
 <style>
-	#title {
+	a:not(.inline-link) {
 		display: inline-flex;
-		justify-content: center;
-		align-items: baseline;
-		gap: 0.5em;
+		align-items: center;
+		gap: 0.25em;
 
-		width: 100%;
+		text-decoration: none;
 	}
 
-	h1,
-	h4 {
-		text-align: center;
+	.warning {
+		display: flex;
+		gap: 1em;
+
+		padding: 0.5em 1em;
+		margin-bottom: 1em;
+
+		background-color: var(--pico-mark-background-color);
+		border-radius: 0.25em;
+	}
+
+	.warning > svg {
+		min-width: 1.5em;
+		margin: 0.25em 0;
 	}
 
 	h4 {
 		margin: 0 0.25em;
+		text-align: center;
+	}
+
+	.wide {
+		width: 100%;
+		justify-content: center;
 	}
 
 	.icon-button {
+		display: inline-flex;
 		padding: 0;
 		margin: 0;
 
@@ -633,14 +959,18 @@
 		margin-bottom: 2em;
 	}
 
-	article:not([aria-busy='true']) {
+	article {
+		margin-bottom: 0.5em;
+	}
+
+	.day:not([aria-busy='true']) {
 		padding: 1em 0.5em 0.25em 0;
 		margin-bottom: 0;
 
 		border: 2px solid rgba(255, 255, 255, 0);
 	}
 
-	article.prioritized-day {
+	.day.prioritized {
 		border-color: var(--pico-border-color);
 	}
 
@@ -654,7 +984,7 @@
 		padding-left: 0.5em;
 	}
 
-	li {
+	.lesson-container {
 		display: flex;
 		align-items: flex-start;
 		gap: 1em;
@@ -662,7 +992,7 @@
 		padding-right: 0.25em;
 	}
 
-	.day {
+	.day-container {
 		padding: 1em 0.25em 0;
 	}
 
@@ -670,7 +1000,7 @@
 		color: var(--pico-secondary);
 	}
 
-	.prioritized-day-line {
+	.prioritized-line {
 		border-top: 2px solid var(--pico-color);
 		border-top: 2px solid var(--pico-color);
 	}
@@ -703,10 +1033,35 @@
 		overflow-y: hidden;
 	}
 
-	mark {
+	.classroom {
+		white-space-collapse: discard;
+	}
+
+	.replacement {
 		padding: 0.15em 0.25em;
 
 		border-radius: 0.25em;
+
+		/* Taken from pico css */
+		background-color: var(--pico-mark-background-color);
+		color: var(--pico-mark-color);
+		vertical-align: baseline;
+	}
+
+	h5 {
+		margin-bottom: 0.5em;
+	}
+
+	select {
+		margin-top: 0;
+	}
+
+	ul {
+		margin-bottom: 0.25em;
+	}
+
+	fieldset {
+		margin-bottom: 0;
 	}
 
 	button:not(.lesson):not(.icon-button) {
