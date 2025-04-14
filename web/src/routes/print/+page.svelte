@@ -752,6 +752,14 @@
 </div>
 
 <style>
+	a {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.25em;
+
+		text-decoration: none;
+	}
+
 	ul {
 		margin-bottom: 0.25em;
 	}
