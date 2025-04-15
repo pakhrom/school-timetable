@@ -472,6 +472,8 @@
 			console.error('User tried opening the lesson information modal with a non-existent lesson');
 	}
 
+	// PERSONALIZATION
+
 	// SETTINGS
 	const defaultSettingsList = $state([
 		{
