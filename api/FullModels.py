@@ -24,3 +24,6 @@ class ReplacementsFull(rdt.ReplacementsBase, _AllServerBase):
 
 class GroupFull(rdt.GroupBase, _AllServerBase):
     pass
+
+class CallScheduleFull(rdt.CallScheduleBase, _AllServerBase):
+    pass

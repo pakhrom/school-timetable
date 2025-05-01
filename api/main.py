@@ -28,6 +28,10 @@ app.include_router(
     routers.group.main(mongoDB.groupsCollection)
 )
 
+app.include_router(
+    routers.callSchedule.main(mongoDB.callScheduleCollection)
+)
+
 if __name__ == "__main__":
     uvicorn.run(
         "main:app",

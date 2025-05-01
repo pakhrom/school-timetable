@@ -46,3 +46,8 @@ class TimetableBase(BaseModel):
             ]
         ]
     ]
+
+class CallScheduleBase(BaseModel):
+    name: str
+    lessonDuration: int
+    lessonStartTimes: list[datetime.datetime]

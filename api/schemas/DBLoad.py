@@ -29,6 +29,7 @@ class DBLoad:
             self.teachersCollection: Collection = self.DB["teachers"]
             self.replacementsDocsCollection: Collection = self.DB["replacementsDocs"]
             self.timetablesCollection: Collection = self.DB["timetables"]
+            self.callScheduleCollection: Collection = self.DB["callSchedule"]
         except pymongo.mongo_client.ConnectionFailure as e:
             logger.error(
                 msg=f"Cant connect to mongoDB:\n{e}"
