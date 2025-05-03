@@ -2,6 +2,12 @@
 	import { currentTab } from './shared.svelte';
 
 	let mobileLayout: boolean = $state(window.innerWidth < 576);
+
+	let replacementsTab: HTMLButtonElement;
+	let timetablesTab: HTMLButtonElement;
+	let groupsTab: HTMLButtonElement;
+	let subjectsTab: HTMLButtonElement;
+	let teachersTab: HTMLButtonElement;
 </script>
 
 <svelte:window
@@ -33,8 +39,10 @@
 <div class="tabs-container">
 	<button
 		class={['secondary', 'tab', currentTab.tab === 'replacements' ? '' : 'outline']}
+		bind:this={replacementsTab}
 		onclick={() => {
 			currentTab.tab = 'replacements';
+			replacementsTab.scrollIntoView({ inline: 'center', behavior: 'smooth' });
 		}}
 	>
 		<svg
@@ -66,8 +74,10 @@
 	</button>
 	<button
 		class={['secondary', 'tab', currentTab.tab === 'timetables' ? '' : 'outline']}
+		bind:this={timetablesTab}
 		onclick={() => {
 			currentTab.tab = 'timetables';
+			timetablesTab.scrollIntoView({ inline: 'center', behavior: 'smooth' });
 		}}
 	>
 		<svg
@@ -91,8 +101,10 @@
 	</button>
 	<button
 		class={['secondary', 'tab', currentTab.tab === 'groups' ? '' : 'outline']}
+		bind:this={groupsTab}
 		onclick={() => {
 			currentTab.tab = 'groups';
+			groupsTab.scrollIntoView({ inline: 'center', behavior: 'smooth' });
 		}}
 	>
 		<svg
@@ -118,8 +130,10 @@
 	</button>
 	<button
 		class={['secondary', 'tab', currentTab.tab === 'subjects' ? '' : 'outline']}
+		bind:this={subjectsTab}
 		onclick={() => {
 			currentTab.tab = 'subjects';
+			subjectsTab.scrollIntoView({ inline: 'center', behavior: 'smooth' });
 		}}
 	>
 		<svg
@@ -141,8 +155,10 @@
 	</button>
 	<button
 		class={['secondary', 'tab', currentTab.tab === 'teachers' ? '' : 'outline']}
+		bind:this={teachersTab}
 		onclick={() => {
 			currentTab.tab = 'teachers';
+			teachersTab.scrollIntoView({ inline: 'center', behavior: 'smooth' });
 		}}
 	>
 		<svg
@@ -162,7 +178,6 @@
 		>
 		Преподаватели
 	</button>
-	<span class="tab hidden">I</span>
 </div>
 <hr />
 
@@ -329,13 +344,22 @@
 
 <style>
 	.tabs-container {
-		display: inline-flex;
+		display: flex;
 		justify-content: flex-start;
 		align-items: center;
 		gap: 0.5em;
 
 		height: 2em;
+		padding-left: 0.2em;
+		padding-right: 0.2em;
 		overflow-x: auto;
+
+		-ms-overflow-style: none;
+		scrollbar-width: none;
+	}
+
+	.tabs-container::-webkit-scrollbar {
+		display: none;
 	}
 
 	.tab {
@@ -352,10 +376,6 @@
 
 	.tab:hover {
 		border-color: var(--pico-secondary-border);
-	}
-
-	.hidden {
-		visibility: hidden;
 	}
 
 	hr {
