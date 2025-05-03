@@ -90,29 +90,6 @@
 		Расписания
 	</button>
 	<button
-		class={['secondary', 'tab', currentTab.tab === 'subjects' ? '' : 'outline']}
-		onclick={() => {
-			currentTab.tab = 'subjects';
-		}}
-	>
-		<svg
-			xmlns="http://www.w3.org/2000/svg"
-			width="20"
-			height="20"
-			viewBox="0 0 24 24"
-			fill="none"
-			stroke="currentColor"
-			stroke-width="2"
-			stroke-linecap="round"
-			stroke-linejoin="round"
-			class="icon icon-tabler icons-tabler-outline icon-tabler-math"
-			><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M19 5h-7l-4 14l-3 -6h-2" /><path
-				d="M14 13l6 6"
-			/><path d="M14 19l6 -6" /></svg
-		>
-		Предметы
-	</button>
-	<button
 		class={['secondary', 'tab', currentTab.tab === 'groups' ? '' : 'outline']}
 		onclick={() => {
 			currentTab.tab = 'groups';
@@ -138,6 +115,29 @@
 			/></svg
 		>
 		Группы
+	</button>
+	<button
+		class={['secondary', 'tab', currentTab.tab === 'subjects' ? '' : 'outline']}
+		onclick={() => {
+			currentTab.tab = 'subjects';
+		}}
+	>
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			width="20"
+			height="20"
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="2"
+			stroke-linecap="round"
+			stroke-linejoin="round"
+			class="icon icon-tabler icons-tabler-outline icon-tabler-math"
+			><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M19 5h-7l-4 14l-3 -6h-2" /><path
+				d="M14 13l6 6"
+			/><path d="M14 19l6 -6" /></svg
+		>
+		Предметы
 	</button>
 	<button
 		class={['secondary', 'tab', currentTab.tab === 'teachers' ? '' : 'outline']}
@@ -215,7 +215,7 @@
 			</div>
 		</article>
 	{/each}
-{:else if currentTab.tab === 'subjects'}
+{:else if currentTab.tab === 'groups'}{:else if currentTab.tab === 'subjects'}
 	<a role="button" href="/manage/subject">
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
@@ -264,7 +264,7 @@
 			</div>
 		</article>
 	{/each}
-{:else if currentTab.tab === 'groups'}{:else if currentTab.tab === 'teachers'}
+{:else if currentTab.tab === 'teachers'}
 	<a role="button" href="/manage/teacher">
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
