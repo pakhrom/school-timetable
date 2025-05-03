@@ -1,0 +1,19 @@
+a {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.25em;
+
+	text-decoration: none;
+}
+
+button,
+a[role='button'] {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 0.25em;
+}
+
+a[role='button'] {
+	margin-bottom: 1em;
+}
