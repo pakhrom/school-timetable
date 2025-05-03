@@ -54,7 +54,9 @@
 				type="text"
 				name="first-name"
 				id="first-name"
-				aria-invalid={$errors.name && $errors.name.first !== undefined}
+				aria-invalid={Object.keys($errors).length !== 0
+					? $errors.name && $errors.name.first !== undefined
+					: undefined}
 				aria-describedby="first-name-message"
 				bind:value={$form.name.first}
 				oninput={() => {
@@ -71,7 +73,9 @@
 				type="text"
 				name="last-name"
 				id="last-name"
-				aria-invalid={$errors.name && $errors.name.last !== undefined}
+				aria-invalid={Object.keys($errors).length !== 0
+					? $errors.name && $errors.name.last !== undefined
+					: undefined}
 				aria-describedby="last-name-message"
 				bind:value={$form.name.last}
 				oninput={() => {
@@ -88,7 +92,9 @@
 				type="text"
 				name="middle-name"
 				id="middle-name"
-				aria-invalid={$errors.name && $errors.name.middle !== undefined}
+				aria-invalid={Object.keys($errors).length !== 0
+					? $errors.name && $errors.name.middle !== undefined
+					: undefined}
 				aria-describedby="middle-name-message"
 				bind:value={$form.name.middle}
 				oninput={() => {
@@ -166,7 +172,7 @@
 					d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"
 				/><path d="M9 12h6" /><path d="M12 9v6" /></svg
 			>
-			Добавить
+			Добавить преподавателя
 		{/if}
 	</button>
 </form>
