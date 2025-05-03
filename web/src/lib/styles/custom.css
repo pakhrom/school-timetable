@@ -17,3 +17,8 @@ a[role='button'] {
 a[role='button'] {
 	margin-bottom: 1em;
 }
+
+label > small {
+	margin-top: 0.2em;
+	margin-bottom: -0.1em;
+}
