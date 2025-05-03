@@ -82,6 +82,11 @@
 				{...$constraints.shortName}
 			/>
 			<small id="short-name-message">
+				{#if Object.keys($errors).length === 0 && $form.name.length > 12}
+					Название предмета очень длинное, <strong>крайне рекомендуется</strong> назначить
+					сокращённое название.
+					<br />
+				{/if}
 				{$errors.shortName}
 			</small>
 		</label>
@@ -153,7 +158,8 @@
 		margin-bottom: 0;
 	}
 
-	button {
-		margin-top: 1.5em;
+	input[type='checkbox'] {
+		margin-top: 0.9em;
+		margin-bottom: 1em;
 	}
 </style>
