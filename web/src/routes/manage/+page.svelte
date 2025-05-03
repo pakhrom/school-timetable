@@ -237,7 +237,7 @@
 	{#each { length: 3 } as _, subjectId}
 		<article>
 			<header class="resource-header">
-				<span><b>Математика</b></span>
+				<b>Программирование</b>
 				<a href={'/manage/subject/' + subjectId}>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -260,7 +260,14 @@
 				</a>
 			</header>
 			<div>
-				<span>Пол: Харчишин</span>
+				<ul>
+					<li>
+						Сокращённое название: <b>Прогр.</b>
+					</li>
+					<li>
+						Обязательно к посящению: <b>Да</b>
+					</li>
+				</ul>
 			</div>
 		</article>
 	{/each}
@@ -285,16 +292,14 @@
 	</a>
 	{#each { length: 3 } as _, teacherId}
 		<article>
-			<header class="resource-header">
-				<span>
-					<b>
-						{#if mobileLayout}
-							Фамилия И.О.
-						{:else}
-							Фамилия Имя Отчество
-						{/if}
-					</b>
-				</span>
+			<div class="resource-header">
+				<b>
+					{#if mobileLayout}
+						Фамилия И.О.
+					{:else}
+						Фамилия Имя Отчество
+					{/if}
+				</b>
 				<a href={'/manage/teacher/' + teacherId}>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -315,9 +320,6 @@
 					>
 					Редактировать
 				</a>
-			</header>
-			<div>
-				<span>Пол: Харчишин</span>
 			</div>
 		</article>
 	{/each}
@@ -368,5 +370,9 @@
 	.resource-header {
 		display: flex;
 		justify-content: space-between;
+	}
+
+	ul {
+		margin-bottom: 0;
 	}
 </style>
