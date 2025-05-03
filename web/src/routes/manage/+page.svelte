@@ -32,11 +32,61 @@
 
 <div class="tabs-container">
 	<button
+		class={['secondary', 'tab', currentTab.tab === 'replacements' ? '' : 'outline']}
+		onclick={() => {
+			currentTab.tab = 'replacements';
+		}}
+	>
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			width="20"
+			height="20"
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="2"
+			stroke-linecap="round"
+			stroke-linejoin="round"
+			class="icon icon-tabler icons-tabler-outline icon-tabler-replace-user"
+			><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path
+				d="M21 11v-3c0 -.53 -.211 -1.039 -.586 -1.414c-.375 -.375 -.884 -.586 -1.414 -.586h-6m0 0l3 3m-3 -3l3 -3"
+			/><path
+				d="M3 13.013v3c0 .53 .211 1.039 .586 1.414c.375 .375 .884 .586 1.414 .586h6m0 0l-3 -3m3 3l-3 3"
+			/><path
+				d="M16 16.502c0 .53 .211 1.039 .586 1.414c.375 .375 .884 .586 1.414 .586c.53 0 1.039 -.211 1.414 -.586c.375 -.375 .586 -.884 .586 -1.414c0 -.53 -.211 -1.039 -.586 -1.414c-.375 -.375 -.884 -.586 -1.414 -.586c-.53 0 -1.039 .211 -1.414 .586c-.375 .375 -.586 .884 -.586 1.414z"
+			/><path
+				d="M4 4.502c0 .53 .211 1.039 .586 1.414c.375 .375 .884 .586 1.414 .586c.53 0 1.039 -.211 1.414 -.586c.375 -.375 .586 -.884 .586 -1.414c0 -.53 -.211 -1.039 -.586 -1.414c-.375 -.375 -.884 -.586 -1.414 -.586c-.53 0 -1.039 .211 -1.414 .586c-.375 .375 -.586 .884 -.586 1.414z"
+			/><path
+				d="M21 21.499c0 -.53 -.211 -1.039 -.586 -1.414c-.375 -.375 -.884 -.586 -1.414 -.586h-2c-.53 0 -1.039 .211 -1.414 .586c-.375 .375 -.586 .884 -.586 1.414"
+			/><path
+				d="M9 9.499c0 -.53 -.211 -1.039 -.586 -1.414c-.375 -.375 -.884 -.586 -1.414 -.586h-2c-.53 0 -1.039 .211 -1.414 .586c-.375 .375 -.586 .884 -.586 1.414"
+			/></svg
+		>
+		Замены
+	</button>
+	<button
 		class={['secondary', 'tab', currentTab.tab === 'timetables' ? '' : 'outline']}
 		onclick={() => {
 			currentTab.tab = 'timetables';
 		}}
 	>
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			width="20"
+			height="20"
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="2"
+			stroke-linecap="round"
+			stroke-linejoin="round"
+			class="icon icon-tabler icons-tabler-outline icon-tabler-calendar-time"
+			><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path
+				d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4"
+			/><path d="M18 18m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M15 3v4" /><path
+				d="M7 3v4"
+			/><path d="M3 11h16" /><path d="M18 16.496v1.504l1 1" /></svg
+		>
 		Расписания
 	</button>
 	<button
@@ -45,7 +95,49 @@
 			currentTab.tab = 'subjects';
 		}}
 	>
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			width="20"
+			height="20"
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="2"
+			stroke-linecap="round"
+			stroke-linejoin="round"
+			class="icon icon-tabler icons-tabler-outline icon-tabler-math"
+			><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M19 5h-7l-4 14l-3 -6h-2" /><path
+				d="M14 13l6 6"
+			/><path d="M14 19l6 -6" /></svg
+		>
 		Предметы
+	</button>
+	<button
+		class={['secondary', 'tab', currentTab.tab === 'groups' ? '' : 'outline']}
+		onclick={() => {
+			currentTab.tab = 'groups';
+		}}
+	>
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			width="20"
+			height="20"
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="2"
+			stroke-linecap="round"
+			stroke-linejoin="round"
+			class="icon icon-tabler icons-tabler-outline icon-tabler-users-group"
+			><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path
+				d="M10 13a2 2 0 1 0 4 0a2 2 0 0 0 -4 0"
+			/><path d="M8 21v-1a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v1" /><path
+				d="M15 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0"
+			/><path d="M17 10h2a2 2 0 0 1 2 2v1" /><path d="M5 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path
+				d="M3 13v-1a2 2 0 0 1 2 -2h2"
+			/></svg
+		>
+		Группы
 	</button>
 	<button
 		class={['secondary', 'tab', currentTab.tab === 'teachers' ? '' : 'outline']}
@@ -53,13 +145,28 @@
 			currentTab.tab = 'teachers';
 		}}
 	>
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			width="20"
+			height="20"
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="2"
+			stroke-linecap="round"
+			stroke-linejoin="round"
+			class="icon icon-tabler icons-tabler-outline icon-tabler-school"
+			><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path
+				d="M22 9l-10 -4l-10 4l10 4l10 -4v6"
+			/><path d="M6 10.6v5.4a6 3 0 0 0 12 0v-5.4" /></svg
+		>
 		Преподаватели
 	</button>
 	<span class="tab hidden">I</span>
 </div>
 <hr />
 
-{#if currentTab.tab === 'timetables'}
+{#if currentTab.tab === 'replacements'}{:else if currentTab.tab === 'timetables'}
 	<a role="button" href="/manage/subject">
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
@@ -157,7 +264,7 @@
 			</div>
 		</article>
 	{/each}
-{:else if currentTab.tab === 'teachers'}
+{:else if currentTab.tab === 'groups'}{:else if currentTab.tab === 'teachers'}
 	<a role="button" href="/manage/teacher">
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
@@ -226,6 +333,7 @@
 		gap: 0.5em;
 
 		height: 2em;
+		overflow-x: auto;
 	}
 
 	.tab {
