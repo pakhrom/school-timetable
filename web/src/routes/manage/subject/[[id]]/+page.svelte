@@ -2,6 +2,7 @@
 	import { subjectWrite } from '$lib/schemas/subject.js';
 	import SuperDebug, { superForm } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
+	import { debugMode } from '../../../shared.js';
 
 	let { data } = $props();
 
@@ -147,7 +148,9 @@
 	</button>
 </form>
 
-<SuperDebug data={$form}></SuperDebug>
+{#if debugMode}
+	<SuperDebug data={$form}></SuperDebug>
+{/if}
 
 <style>
 	.grid {
