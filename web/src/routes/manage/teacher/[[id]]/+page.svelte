@@ -109,34 +109,36 @@
 
 	<fieldset>
 		<legend> Пол </legend>
-		<label for="female">
-			<input
-				type="radio"
-				name="sex"
-				value="female"
-				id="female"
-				bind:group={$form.gender}
-				oninput={() => {
-					changesMade = true;
-				}}
-				{...$constraints.gender}
-			/>
-			Женский
-		</label>
-		<label for="male">
-			<input
-				type="radio"
-				name="sex"
-				value="male"
-				id="male"
-				bind:group={$form.gender}
-				oninput={() => {
-					changesMade = true;
-				}}
-				{...$constraints.gender}
-			/>
-			Мужской
-		</label>
+		<div class="horizontal-fieldset">
+			<label for="female">
+				<input
+					type="radio"
+					name="sex"
+					value="female"
+					id="female"
+					bind:group={$form.gender}
+					oninput={() => {
+						changesMade = true;
+					}}
+					{...$constraints.gender}
+				/>
+				Женский
+			</label>
+			<label for="male">
+				<input
+					type="radio"
+					name="sex"
+					value="male"
+					id="male"
+					bind:group={$form.gender}
+					oninput={() => {
+						changesMade = true;
+					}}
+					{...$constraints.gender}
+				/>
+				Мужской
+			</label>
+		</div>
 	</fieldset>
 
 	<button type="submit" disabled={!changesMade}>
@@ -185,6 +187,16 @@
 <style>
 	.grid {
 		row-gap: 0.25em;
+	}
+
+	.horizontal-fieldset {
+		display: inline-flex;
+		flex-wrap: wrap;
+		gap: 2em;
+	}
+
+	fieldset > legend {
+		margin-bottom: 0.15em;
 	}
 
 	input[type='text'] {
