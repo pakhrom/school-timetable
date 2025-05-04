@@ -1,19 +1,24 @@
 from pymongo.collection import Collection
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from FullModels import TeacherFull
 from BaseModels import TeacherBase
-from utiles.CRUDMethods import CRUDMethods
+from authx import AuthX
+from utiles.WorkObjectsCRUDRoutesCreate import WorkObjectsCRUDRoutesCreate
 
-def main(teachersCollection: Collection) -> APIRouter:
+def main(
+        teachersCollection: Collection,
+        security: AuthX
+) -> APIRouter:
     router = APIRouter(
         prefix="/teachers",
         tags=["Teachers"]
     )
 
-    CRUDMethods(
+    WorkObjectsCRUDRoutesCreate(
         router=router,
         fullModel=TeacherFull,
         baseModel=TeacherBase,
-        mongoCollection=teachersCollection
+        mongoCollection=teachersCollection,
+        dependencies=[Depends(security.access_token_required)]
     ).SetupMethods()
     return router

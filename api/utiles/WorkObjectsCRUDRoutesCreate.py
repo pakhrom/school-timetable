@@ -1,27 +1,43 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends, Request
 from pydantic import BaseModel
 from schemas.DBLoad import getListDicts
 from bson.objectid import ObjectId
 from pymongo import collection
+from typing import Awaitable, Callable
+from authx import TokenPayload
+from typing import Optional
 
-class CRUDMethods:
+
+
+class WorkObjectsCRUDRoutesCreate:
+    """
+    NOTE: You should use it only with work objects, not system, for system create other method or write routes in file
+    """
     kwargsAdd: dict = {}
     kwargsUpdate: dict = {}
     kwargsDelete: dict = {}
     kwargsGetOne: dict = {}
     kwargsGetAll: dict = {}
+    dependencies: list[Depends(Callable[[Request], Awaitable[TokenPayload]])]
     systemDBFields: list[str] = ("objId")
+
     def __init__(
             self,
             router: APIRouter,
             fullModel,
             baseModel,
             mongoCollection: collection,
+            dependencies: list[Depends(Callable[[Request], Awaitable[TokenPayload]])]
     ):
         self.router = router
         self.fullModel = fullModel
         self.baseModel = baseModel
         self.mongoCollection = mongoCollection
+        self.dependencies = dependencies
+
+    @classmethod
+    def authenticate(cls):
+        pass
 
     def  GetOne(self):
         @self.router.get(
@@ -62,6 +78,7 @@ class CRUDMethods:
         @self.router.post(
             path="",
             response_model=str,
+            dependencies=self.dependencies
         )
         async def add(obj: baseModel):
             result = self.mongoCollection.insert_one(
@@ -75,6 +92,7 @@ class CRUDMethods:
         baseModel = self.baseModel
         @self.router.put(
             path="/{objId}",
+            dependencies=self.dependencies
         )
         async def update(objId: str, obj: baseModel):
             obj.objId = objId
@@ -88,7 +106,8 @@ class CRUDMethods:
 
     def DeleteOne(self):
         @self.router.delete(
-            path="/{objId}"
+            path="/{objId}",
+            dependencies=self.dependencies
         )
         async def delete(objId: str):
             result = self.mongoCollection.delete_one(

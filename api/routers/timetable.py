@@ -1,26 +1,31 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 from pymongo.collection import Collection
 import logging
 
 from FullModels import TimetableFull
 from BaseModels import TimetableBase
-from utiles.CRUDMethods import CRUDMethods
+from utiles.WorkObjectsCRUDRoutesCreate import WorkObjectsCRUDRoutesCreate
 from schemas.DBLoad import getListDicts
 from typing import Union, Optional
+from authx import AuthX
 
-def main(timetablesCollection: Collection) -> APIRouter:
+def main(
+        timetablesCollection: Collection,
+        security: AuthX
+) -> APIRouter:
 
     router = APIRouter(
         prefix="/timetables",
         tags=["Timetables"]
     )
 
-    methods = CRUDMethods(
+    methods = WorkObjectsCRUDRoutesCreate(
         router=router,
         fullModel=TimetableFull,
         baseModel=TimetableBase,
-        mongoCollection=timetablesCollection
+        mongoCollection=timetablesCollection,
+        dependencies=[Depends(security.access_token_required)]
     )
     methods.AddOne()
     methods.UpdateOne()

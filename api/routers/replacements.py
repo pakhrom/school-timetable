@@ -1,25 +1,30 @@
 import datetime
 from typing import Optional
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from FullModels import ReplacementsFull
 from BaseModels import ReplacementsBase
 from schemas.DBLoad import getListDicts
-from utiles.CRUDMethods import CRUDMethods
+from utiles.WorkObjectsCRUDRoutesCreate import WorkObjectsCRUDRoutesCreate
 from pymongo.collection import Collection
+from authx import AuthX
 
-def main(replacementsDocsCollection: Collection) -> APIRouter:
+def main(
+        replacementsDocsCollection: Collection,
+        security: AuthX
+) -> APIRouter:
 
     router = APIRouter(
         prefix="/replacements",
         tags=["Replacements"]
     )
 
-    CRUDMethods(
+    WorkObjectsCRUDRoutesCreate(
         router=router,
         fullModel=ReplacementsFull,
         baseModel=ReplacementsBase,
-        mongoCollection=replacementsDocsCollection
+        mongoCollection=replacementsDocsCollection,
+        dependencies=[Depends(security.access_token_required)]
     ).SetupMethods()
 
     @router.get(

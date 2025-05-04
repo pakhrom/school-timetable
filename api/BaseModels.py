@@ -2,6 +2,7 @@ import datetime
 from typing import Optional
 from pydantic import BaseModel
 from enum import Enum
+import hashlib
 
 
 class SubjectBase(BaseModel):
@@ -51,3 +52,11 @@ class CallScheduleBase(BaseModel):
     name: str
     lessonDuration: int
     lessonStartTimes: list[datetime.datetime]
+
+class UserBase(BaseModel):
+    displayName: str
+    username: str
+
+class CredentialBase(BaseModel):
+    username: str
+    passwordHashed: str

@@ -1,4 +1,5 @@
 import logging
+from enum import unique
 
 import pymongo
 from pydantic import BaseModel
@@ -23,13 +24,21 @@ class DBLoad:
             logger.info(
                 msg="Pinged your deployment. You successfully connected to MongoDB!",
             )
+
             self.DB = client.TimetableProject
             self.subjectCollection: Collection = self.DB["subjects"]
             self.groupsCollection: Collection = self.DB["groups"]
             self.teachersCollection: Collection = self.DB["teachers"]
             self.replacementsDocsCollection: Collection = self.DB["replacementsDocs"]
             self.timetablesCollection: Collection = self.DB["timetables"]
-            self.callScheduleCollection: Collection = self.DB["callSchedule"]
+            self.callSchedulesCollection: Collection = self.DB["callSchedules"]
+
+            self.usersCollection: Collection = self.DB["users"]
+            self.usersCollection.create_index("username", unique=True)
+
+            self.credentialCollection: Collection = self.DB["credentials"]
+            self.credentialCollection.create_index("username", unique=True)
+
         except pymongo.mongo_client.ConnectionFailure as e:
             logger.error(
                 msg=f"Cant connect to mongoDB:\n{e}"
