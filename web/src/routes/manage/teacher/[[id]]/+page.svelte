@@ -49,25 +49,6 @@
 
 <form action="POST" use:enhance>
 	<div class="grid">
-		<label for="first-name">
-			Имя*
-			<input
-				type="text"
-				name="first-name"
-				id="first-name"
-				aria-invalid={Object.keys($errors).length !== 0
-					? $errors.name && $errors.name.first !== undefined
-					: undefined}
-				aria-describedby="first-name-message"
-				bind:value={$form.name.first}
-				oninput={() => {
-					changesMade = true;
-				}}
-				{...$constraints.name?.first}
-			/>
-			<small id="first-name-message">{$errors.name?.first}</small>
-		</label>
-
 		<label for="last-name">
 			Фамилия*
 			<input
@@ -85,6 +66,25 @@
 				{...$constraints.name?.last}
 			/>
 			<small id="last-name-message">{$errors.name?.last}</small>
+		</label>
+
+		<label for="first-name">
+			Имя*
+			<input
+				type="text"
+				name="first-name"
+				id="first-name"
+				aria-invalid={Object.keys($errors).length !== 0
+					? $errors.name && $errors.name.first !== undefined
+					: undefined}
+				aria-describedby="first-name-message"
+				bind:value={$form.name.first}
+				oninput={() => {
+					changesMade = true;
+				}}
+				{...$constraints.name?.first}
+			/>
+			<small id="first-name-message">{$errors.name?.first}</small>
 		</label>
 
 		<label for="middle-name">
