@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { currentTab } from './shared.svelte';
 
 	let mobileLayout: boolean = $state(window.innerWidth < 576);
@@ -8,6 +9,26 @@
 	let groupsTab: HTMLButtonElement;
 	let subjectsTab: HTMLButtonElement;
 	let teachersTab: HTMLButtonElement;
+
+	onMount(() => {
+		switch (currentTab.tab) {
+			case 'replacements':
+				replacementsTab.scrollIntoView({ inline: 'center' });
+				break;
+			case 'timetables':
+				timetablesTab.scrollIntoView({ inline: 'center' });
+				break;
+			case 'groups':
+				groupsTab.scrollIntoView({ inline: 'center' });
+				break;
+			case 'subts':
+				subtsTab.scrollIntoView({ inline: 'center' });
+				break;
+			case 'teachers':
+				teachersTab.scrollIntoView({ inline: 'center' });
+				break;
+		}
+	});
 </script>
 
 <svelte:window
