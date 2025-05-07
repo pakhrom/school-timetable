@@ -10,6 +10,8 @@
 	let subjectsTab: HTMLButtonElement;
 	let teachersTab: HTMLButtonElement;
 
+	let groupsGroupBy: 'subject' | 'teacher' | 'none' = $state('subject');
+
 	onMount(() => {
 		switch (currentTab.tab) {
 			case 'replacements':
@@ -29,6 +31,371 @@
 				break;
 		}
 	});
+
+	// template data
+	interface Teacher {
+		id: string;
+		name: { first: string; last: string; middle?: string };
+		gender: string;
+	}
+	interface Subject {
+		id: string;
+		name: string;
+		shortName: string;
+		optional: boolean;
+	}
+	interface Group {
+		id: string;
+		subject: Subject;
+		teacher: Teacher;
+		classroom: string;
+		attendPeriodicity: number;
+	}
+
+	const teachers: Teacher[] = [
+		{
+			id: 'tea-1',
+			name: {
+				first: 'Андрей',
+				last: 'Поздняков',
+				middle: 'Владимирович'
+			},
+			gender: 'male'
+		},
+		{
+			id: 'tea-2',
+			name: {
+				first: 'Андрей2',
+				last: 'Поздняков2',
+				middle: 'Владимирович2'
+			},
+			gender: 'female'
+		},
+		{
+			id: 'tea-3',
+			name: {
+				first: 'Светлана',
+				last: 'Штаркер',
+				middle: 'Анатольевна'
+			},
+			gender: 'female'
+		},
+		{
+			id: 'tea-4',
+			name: {
+				first: 'Мария',
+				last: 'Заворохина',
+				middle: 'Вадимовна'
+			},
+			gender: 'female'
+		},
+		{
+			id: 'tea-5',
+			name: {
+				first: 'Любовь',
+				last: 'Прокофьева',
+				middle: 'Валентиновна'
+			},
+			gender: 'female'
+		},
+		{
+			id: 'tea-6',
+			name: {
+				first: 'Евгений',
+				last: 'Турчанов',
+				middle: 'Валентинович'
+			},
+			gender: 'male'
+		}
+	];
+	const subjects: Subject[] = [
+		{
+			id: 'sub-1',
+			name: 'Информатика',
+			shortName: 'Информ.',
+			optional: false
+		},
+		{
+			id: 'sub-2',
+			name: 'Литература',
+			shortName: '',
+			optional: false
+		},
+		{
+			id: 'sub-3',
+			name: 'Биология',
+			shortName: '',
+			optional: false
+		},
+		{
+			id: 'sub-4',
+			name: 'Физика СК',
+			shortName: '',
+			optional: false
+		},
+		{
+			id: 'sub-5',
+			name: 'История ВНД',
+			shortName: '',
+			optional: true
+		}
+	];
+	const groups: Group[] = [
+		{
+			id: 'grp-1',
+			subject: {
+				id: 'sub-1',
+				name: 'Информатика',
+				shortName: 'Информ.',
+				optional: false
+			},
+			teacher: {
+				id: 'tea-1',
+				name: {
+					first: 'Андрей',
+					last: 'Поздняков',
+					middle: 'Владимирович'
+				},
+				gender: 'male'
+			},
+			classroom: '307',
+			attendPeriodicity: 1
+		},
+		{
+			id: 'grp-2',
+			subject: {
+				id: 'sub-1',
+				name: 'Информатика',
+				shortName: 'Информ.',
+				optional: false
+			},
+			teacher: {
+				id: 'tea-2',
+				name: {
+					first: 'Андрей2',
+					last: 'Поздняков2',
+					middle: 'Владимирович2'
+				},
+				gender: 'female'
+			},
+			classroom: '203л',
+			attendPeriodicity: 1
+		},
+		{
+			id: 'grp-3',
+			subject: {
+				id: 'sub-2',
+				name: 'Литература',
+				shortName: '',
+				optional: false
+			},
+			teacher: {
+				id: 'tea-3',
+				name: {
+					first: 'Светлана',
+					last: 'Штаркер',
+					middle: 'Анатольевна'
+				},
+				gender: 'female'
+			},
+			classroom: '106',
+			attendPeriodicity: 1
+		},
+		{
+			id: 'grp-4',
+			subject: {
+				id: 'sub-3',
+				name: 'Биология',
+				shortName: '',
+				optional: false
+			},
+			teacher: {
+				id: 'tea-4',
+				name: {
+					first: 'Мария',
+					last: 'Заворохина',
+					middle: 'Вадимовна'
+				},
+				gender: 'female'
+			},
+			classroom: '201',
+			attendPeriodicity: 1
+		},
+		{
+			id: 'grp-5',
+			subject: {
+				id: 'sub-4',
+				name: 'Физика СК',
+				shortName: '',
+				optional: false
+			},
+			teacher: {
+				id: 'tea-5',
+				name: {
+					first: 'Любовь',
+					last: 'Прокофьева',
+					middle: 'Валентиновна'
+				},
+				gender: 'female'
+			},
+			classroom: '407',
+			attendPeriodicity: 1
+		},
+		{
+			id: 'grp-6',
+			subject: {
+				id: 'sub-5',
+				name: 'История ВНД',
+				shortName: '',
+				optional: true
+			},
+			teacher: {
+				id: 'tea-6',
+				name: {
+					first: 'Евгений',
+					last: 'Турчанов',
+					middle: 'Валентинович'
+				},
+				gender: 'male'
+			},
+			classroom: '303',
+			attendPeriodicity: 1
+		}
+	];
+	const groupsBySubject: {
+		[subjectId: string]: Group[];
+	} = {
+		'sub-1': [
+			{
+				id: 'grp-1',
+				subject: {
+					id: 'sub-1',
+					name: 'Информатика',
+					shortName: 'Информ.',
+					optional: false
+				},
+				teacher: {
+					id: 'tea-1',
+					name: {
+						first: 'Андрей',
+						last: 'Поздняков',
+						middle: 'Владимирович'
+					},
+					gender: 'male'
+				},
+				classroom: '307',
+				attendPeriodicity: 1
+			},
+			{
+				id: 'grp-2',
+				subject: {
+					id: 'sub-1',
+					name: 'Информатика',
+					shortName: 'Информ.',
+					optional: false
+				},
+				teacher: {
+					id: 'tea-2',
+					name: {
+						first: 'Андрей2',
+						last: 'Поздняков2',
+						middle: 'Владимирович2'
+					},
+					gender: 'female'
+				},
+				classroom: '203л',
+				attendPeriodicity: 1
+			}
+		],
+		'sub-2': [
+			{
+				id: 'grp-3',
+				subject: {
+					id: 'sub-2',
+					name: 'Литература',
+					shortName: '',
+					optional: false
+				},
+				teacher: {
+					id: 'tea-3',
+					name: {
+						first: 'Светлана',
+						last: 'Штаркер',
+						middle: 'Анатольевна'
+					},
+					gender: 'female'
+				},
+				classroom: '106',
+				attendPeriodicity: 1
+			}
+		],
+		'sub-3': [
+			{
+				id: 'grp-4',
+				subject: {
+					id: 'sub-3',
+					name: 'Биология',
+					shortName: '',
+					optional: false
+				},
+				teacher: {
+					id: 'tea-4',
+					name: {
+						first: 'Мария',
+						last: 'Заворохина',
+						middle: 'Вадимовна'
+					},
+					gender: 'female'
+				},
+				classroom: '201',
+				attendPeriodicity: 1
+			}
+		],
+		'sub-4': [
+			{
+				id: 'grp-5',
+				subject: {
+					id: 'sub-4',
+					name: 'Физика СК',
+					shortName: '',
+					optional: false
+				},
+				teacher: {
+					id: 'tea-5',
+					name: {
+						first: 'Любовь',
+						last: 'Прокофьева',
+						middle: 'Валентиновна'
+					},
+					gender: 'female'
+				},
+				classroom: '407',
+				attendPeriodicity: 1
+			}
+		],
+		'sub-5': [
+			{
+				id: 'grp-6',
+				subject: {
+					id: 'sub-5',
+					name: 'История ВНД',
+					shortName: '',
+					optional: true
+				},
+				teacher: {
+					id: 'tea-6',
+					name: {
+						first: 'Евгений',
+						last: 'Турчанов',
+						middle: 'Валентинович'
+					},
+					gender: 'male'
+				},
+				classroom: '303',
+				attendPeriodicity: 1
+			}
+		]
+	};
 </script>
 
 <svelte:window
@@ -55,7 +422,7 @@
 	>
 	Вернуться к расписанию
 </a>
-<h1>Панель администратора</h1>
+<h1>Панель управления</h1>
 
 <div class="tabs-container">
 	<button
@@ -202,8 +569,11 @@
 </div>
 <hr />
 
-{#if currentTab.tab === 'replacements'}{:else if currentTab.tab === 'timetables'}
-	<a role="button" href="/manage/subject">
+{#if currentTab.tab === 'replacements'}
+	<!-- REPLACEMENTS TAB -->
+{:else if currentTab.tab === 'timetables'}
+	<!-- TIMETABLES TAB -->
+	<a role="button" href="/manage/timetable">
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
 			width="24"
@@ -221,11 +591,11 @@
 		>
 		Добавить расписание
 	</a>
-	{#each { length: 3 } as _, subjectId}
+	{#each { length: 3 } as _, timetableId}
 		<article>
 			<header class="resource-header">
 				<span><b>10А</b></span>
-				<a href={'/manage/timetable/' + subjectId}>
+				<a href={'/manage/timetable/' + timetableId} aria-label="Редактировать">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						width="24"
@@ -243,7 +613,9 @@
 							d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z"
 						/><path d="M16 5l3 3" /></svg
 					>
-					Редактировать
+					{#if !mobileLayout}
+						Редактировать
+					{/if}
 				</a>
 			</header>
 			<div>
@@ -251,7 +623,129 @@
 			</div>
 		</article>
 	{/each}
-{:else if currentTab.tab === 'groups'}{:else if currentTab.tab === 'subjects'}
+{:else if currentTab.tab === 'groups'}
+	<!-- GROUPS TAB -->
+	<div class="filter">
+		<div class="filter-left">
+			<select name="group-by" bind:value={groupsGroupBy} id="group-by">
+				<option value="subject">По предметам</option>
+				<option value="teacher">По преподавателям</option>
+				<!-- <option value="none">Не группировать</option> -->
+			</select>
+		</div>
+		<div class="filter-right">
+			<a role="button" href="/manage/group" class="icon-button">
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					width="24"
+					height="24"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					class="icon icon-tabler icons-tabler-outline icon-tabler-circle-plus"
+					><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path
+						d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"
+					/><path d="M9 12h6" /><path d="M12 9v6" /></svg
+				>
+				{#if !mobileLayout}
+					Добавить группу
+				{/if}
+			</a>
+		</div>
+	</div>
+	{#if groupsGroupBy === 'subject'}
+		{#each Object.keys(groupsBySubject) as subjectId (subjectId)}
+			<details open>
+				<summary><b>{groupsBySubject[subjectId][0].subject.name}</b></summary>
+				{#each groupsBySubject[subjectId] as group, groupId (group.id)}
+					<article>
+						<header class="resource-header">
+							<span>
+								Группа «<b>{group.id}</b>»
+							</span>
+							<a href={'/manage/group/' + groupId} aria-label="Редактировать">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									width="24"
+									height="24"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									class="icon icon-tabler icons-tabler-outline icon-tabler-edit"
+									><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path
+										d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1"
+									/><path
+										d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z"
+									/><path d="M16 5l3 3" /></svg
+								>
+								{#if !mobileLayout}
+									Редактировать
+								{/if}
+							</a>
+						</header>
+						<div>
+							<ul>
+								<li>
+									Предмет:
+									<a href={'/manage/subject/' + group.subject.id}>
+										<b>
+											{#if mobileLayout && group.subject.shortName && group.subject.shortName.length !== 0}
+												{group.subject.shortName}
+											{:else}
+												{group.subject.name}
+											{/if}
+										</b>
+									</a>
+								</li>
+								<li>
+									Преподаватель:
+									<a href={'/manage/teacher/' + group.teacher.id}>
+										<b>
+											{#if mobileLayout}
+												{group.teacher.name.last}
+												{group.teacher.name.first[0]}.
+												{group.teacher.name.middle ? group.teacher.name.middle[0] : ''}.
+											{:else}
+												{group.teacher.name.last}
+												{group.teacher.name.first}
+												{group.teacher.name.middle}
+											{/if}
+										</b>
+									</a>
+								</li>
+								<li>
+									Кабинет:
+									<b>
+										{group.classroom}
+									</b>
+								</li>
+								{#if group.attendPeriodicity > 1}
+									<li>
+										Посещение каждые
+										<b>
+											{group.attendPeriodicity} недели
+										</b>
+									</li>
+								{/if}
+							</ul>
+						</div>
+					</article>
+				{/each}
+			</details>
+		{/each}
+	{:else if groupsGroupBy === 'teacher'}
+		<!-- TODO: Сделать визуализацию данных при группировке по учителям -->
+	{:else if groupsGroupBy === 'none'}
+		<!-- TODO: Сделать визуализацию данных при отсутствии группировки групп -->
+	{/if}
+{:else if currentTab.tab === 'subjects'}
+	<!-- SUBJECTS TAB -->
 	<a role="button" href="/manage/subject">
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
@@ -270,11 +764,85 @@
 		>
 		Добавить предмет
 	</a>
-	{#each { length: 3 } as _, subjectId}
-		<article>
-			<header class="resource-header">
-				<b>Программирование</b>
-				<a href={'/manage/subject/' + subjectId}>
+	{#each subjects as subject, subjectId (subject.id)}
+		{#if mobileLayout}
+			<article>
+				{#if subject.shortName || subject.optional}
+					<header class="resource-header">
+						<b>{subject.name}</b>
+						<a href={'/manage/subject/' + subjectId} aria-label="Редактировать">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								width="24"
+								height="24"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								class="icon icon-tabler icons-tabler-outline icon-tabler-edit"
+								><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path
+									d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1"
+								/><path
+									d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z"
+								/><path d="M16 5l3 3" /></svg
+							>
+						</a>
+					</header>
+					<div>
+						<ul>
+							{#if subject.shortName}
+								<li>
+									Сокращённое название: <b>{subject.shortName}</b>
+								</li>
+							{/if}
+							{#if subject.optional}
+								<li>Посещение по желанию</li>
+							{/if}
+						</ul>
+					</div>
+				{:else}
+					<span class="resource-header">
+						<b>{subject.name}</b>
+						<a href={'/manage/subject/' + subject.id} aria-label="Редактировать">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								width="24"
+								height="24"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								class="icon icon-tabler icons-tabler-outline icon-tabler-edit"
+								><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path
+									d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1"
+								/><path
+									d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z"
+								/><path d="M16 5l3 3" /></svg
+							>
+							{#if !mobileLayout}
+								Редактировать
+							{/if}
+						</a>
+					</span>
+				{/if}
+			</article>
+		{:else}
+			<article class="resource-header">
+				<span>
+					{#if subject.optional}
+						<em data-tooltip="Посещение по желанию">{subject.name}</em>
+					{:else}
+						<b>{subject.name}</b>
+					{/if}
+					{#if subject.shortName}
+						({subject.shortName})
+					{/if}
+				</span>
+				<a href={'/manage/subject/' + subjectId} aria-label="Редактировать">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						width="24"
@@ -292,22 +860,15 @@
 							d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z"
 						/><path d="M16 5l3 3" /></svg
 					>
-					Редактировать
+					{#if !mobileLayout}
+						Редактировать
+					{/if}
 				</a>
-			</header>
-			<div>
-				<ul>
-					<li>
-						Сокращённое название: <b>Прогр.</b>
-					</li>
-					<li>
-						Обязательно к посящению: <b>Да</b>
-					</li>
-				</ul>
-			</div>
-		</article>
+			</article>
+		{/if}
 	{/each}
 {:else if currentTab.tab === 'teachers'}
+	<!-- TEACHERS TAB -->
 	<a role="button" href="/manage/teacher">
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
@@ -326,17 +887,18 @@
 		>
 		Добавить преподавателя
 	</a>
-	{#each { length: 3 } as _, teacherId}
+	{#each teachers as teacher, teacherId (teacher.id)}
 		<article>
 			<div class="resource-header">
-				<b>
+				<span>
 					{#if mobileLayout}
-						Фамилия И.О.
+						<b>{teacher.name.last}</b>
+						{teacher.name.first[0]}. {teacher.name.middle ? teacher.name.middle[0] : ''}.
 					{:else}
-						Фамилия Имя Отчество
+						{teacher.name.first} {teacher.name.middle} <b>{teacher.name.last}</b>
 					{/if}
-				</b>
-				<a href={'/manage/teacher/' + teacherId}>
+				</span>
+				<a href={'/manage/teacher/' + teacherId} aria-label="Редактировать">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						width="24"
@@ -354,7 +916,9 @@
 							d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z"
 						/><path d="M16 5l3 3" /></svg
 					>
-					Редактировать
+					{#if !mobileLayout}
+						Редактировать
+					{/if}
 				</a>
 			</div>
 		</article>
@@ -399,6 +963,39 @@
 		border-color: var(--pico-secondary-border);
 	}
 
+	.filter {
+		display: grid;
+		grid-template-columns: 1fr auto;
+		gap: 0.5em;
+
+		padding: 0.5em;
+		margin-bottom: 1em;
+
+		background-color: var(--pico-form-element-background-color);
+		border-radius: var(--pico-border-radius);
+	}
+
+	.filter > .filter-left,
+	.filter > .filter-right {
+		display: flex;
+		align-items: center;
+		gap: 0.5em;
+	}
+
+	.filter-left > select {
+		width: 20ch;
+		padding: 0.5em;
+		margin-bottom: 0;
+	}
+
+	.filter-right > a[role='button'] {
+		width: max-content;
+		padding: 0.5em;
+		margin-bottom: 0;
+
+		white-space: nowrap;
+	}
+
 	hr {
 		margin-top: 0.25em;
 		margin-bottom: 0.5em;
@@ -406,6 +1003,14 @@
 
 	article {
 		margin-bottom: 1em;
+	}
+
+	details {
+		margin-bottom: 2em;
+	}
+
+	details > article {
+		margin-bottom: 0.5em;
 	}
 
 	.resource-header {
