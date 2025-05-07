@@ -7,6 +7,10 @@
 		'Noto Color Emoji';
 }
 
+.icon-button {
+	padding: 0.75em;
+}
+
 a {
 	display: inline-flex;
 	align-items: center;
