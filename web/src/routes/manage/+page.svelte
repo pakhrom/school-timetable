@@ -4,6 +4,7 @@
 
 	let mobileLayout: boolean = $state(window.innerWidth < 576);
 
+	let tabBar: HTMLDivElement;
 	let replacementsTab: HTMLButtonElement;
 	let timetablesTab: HTMLButtonElement;
 	let callScheduleTab: HTMLButtonElement;
@@ -35,6 +36,11 @@
 				break;
 		}
 	});
+
+	function scrollTabBar(event: WheelEvent): void {
+		event.preventDefault();
+		tabBar.scrollBy({ left: event.deltaY < 0 ? -30 : 30 });
+	}
 
 	// template data
 	interface Teacher {
@@ -428,7 +434,7 @@
 </a>
 <h1>Панель управления</h1>
 
-<div class="tabs-container">
+<div class="tabs-container" bind:this={tabBar} onwheel={scrollTabBar}>
 	<button
 		class={['secondary', 'tab', currentTab.tab === 'replacements' ? '' : 'outline']}
 		bind:this={replacementsTab}
