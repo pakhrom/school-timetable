@@ -21,8 +21,8 @@
 			case 'groups':
 				groupsTab.scrollIntoView({ inline: 'center' });
 				break;
-			case 'subts':
-				subtsTab.scrollIntoView({ inline: 'center' });
+			case 'subjects':
+				subjectsTab.scrollIntoView({ inline: 'center' });
 				break;
 			case 'teachers':
 				teachersTab.scrollIntoView({ inline: 'center' });
