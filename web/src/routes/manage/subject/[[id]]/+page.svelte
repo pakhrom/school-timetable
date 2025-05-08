@@ -72,7 +72,7 @@
 				type="text"
 				name="short-name"
 				id="short-name"
-				aria-invalid={Object.keys($errors).length !== 0 && $form.name.length <= 12
+				aria-invalid={Object.keys($errors).length !== 0 && $form.name.length <= 10
 					? $errors.shortName !== undefined
 					: undefined}
 				aria-describedby="short-name-message"
@@ -83,7 +83,7 @@
 				{...$constraints.shortName}
 			/>
 			<small id="short-name-message">
-				{#if $form.name.length > 12 && (($form.shortName?.length && $form.shortName.length === 0) || !$form.shortName)}
+				{#if $form.name.length > 10 && (($form.shortName?.length && $form.shortName.length === 0) || !$form.shortName)}
 					Название предмета очень длинное, рекомендуется назначить сокращённое название.
 					<br />
 				{/if}
