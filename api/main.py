@@ -2,12 +2,12 @@ import authx.exceptions
 from fastapi import FastAPI
 from starlette.responses import PlainTextResponse
 
-import FullModels
-from schemas.DBLoad import DBLoad
-from config import mongoDBURL, JWTSecretKey
-from auth import auth
+import app.FullModels
+from app.schemas.DBLoad import DBLoad
+from app.config import mongoDBURL, JWTSecretKey
+from app.auth import authentication
 import uvicorn
-import routers
+import app.routers as routers
 
 
 app = FastAPI(title="api")
@@ -21,6 +21,7 @@ mongoDB = DBLoad(
 security = auth.createSecurity(JWTSecretKey)
 app.include_router(
     auth.createRouter(
+        userCollection=mongoDB.usersCollection,
         credentialCollection=mongoDB.credentialCollection,
         security=security,
     )
@@ -57,14 +58,14 @@ app.include_router(
         security.security
     )
 )
+# app.include_router(
+#     routers.callSchedule.main(
+#         mongoDB.callSchedulesCollection,
+#         security.security
+#     )
+# )
 app.include_router(
-    routers.callSchedule.main(
-        mongoDB.callSchedulesCollection,
-        security.security
-    )
-)
-app.include_router(
-    routers.user.main(mongoDB.usersCollection, mongoDB.credentialCollection)
+    routers.user.main(mongoDB.usersCollection, mongoDB.credentialCollection, security.security)
 )
 # No authorization cookie error processing
 @app.exception_handler(authx.exceptions.MissingTokenError)
@@ -73,10 +74,17 @@ async def NoAuthCookie(request, exc):
         str(exc), status_code=403
     )
 
+# Expired auth cookie
+@app.exception_handler(authx.exceptions.JWTDecodeError)
+async def OldCookie(request, exc):
+    return PlainTextResponse(
+        str(exc), status_code=401
+    )
 
 if __name__ == "__main__":
     uvicorn.run(
         "main:app",
         host="0.0.0.0",
-        reload=True
+        reload=True,
+        port=8080
     )
