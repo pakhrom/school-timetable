@@ -18,9 +18,9 @@ mongoDB = DBLoad(
 )
 
 # Security init
-security = auth.createSecurity(JWTSecretKey)
+security = authentication.createSecurity(JWTSecretKey)
 app.include_router(
-    auth.createRouter(
+    authentication.createRouter(
         userCollection=mongoDB.usersCollection,
         credentialCollection=mongoDB.credentialCollection,
         security=security,
@@ -49,6 +49,7 @@ app.include_router(
 app.include_router(
     routers.replacements.main(
         mongoDB.replacementsDocsCollection,
+        mongoDB.groupsCollection,
         security.security
     )
 )
