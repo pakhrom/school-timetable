@@ -49,7 +49,7 @@ def main(
         return getListDicts(
             collection=subjectCollection,
             model=SubjectFull,
-            query={"_id": ObjectId(objId)}
+            filter={"_id": ObjectId(objId)}
         )[0]
 
     @router.post(
@@ -75,7 +75,6 @@ def main(
 
     @router.delete(
         path="/{objId}",
-        response_model=int,
         dependencies=[Depends(authorization)]
     )
     async def DeleteOne(objId: str):

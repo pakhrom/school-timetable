@@ -76,13 +76,11 @@ def main(
 
     @router.delete(
         path="/{id}",
-        response_model=TeacherFull,
         dependencies=[Depends(authorization)]
     )
     async def DeleteOne(id: str):
         result = teachersCollection.delete_one({"_id": ObjectId(id)})
         if result.deleted_count == 0:
             raise HTTPException(status_code=404, detail="Teacher not found")
-        return result
 
     return router

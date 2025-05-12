@@ -45,13 +45,13 @@ class DBLoad:
                 msg=f"Cant connect to mongoDB:\n{e}"
             )
 
-def getListDicts(collection: Collection, model, **kwargs) -> list["model"]:
+def getListDicts(collection: Collection, model, **kwargs) -> list:
     response = [
         model(
             objId=str(element.pop("_id")),
             **element
         ) for element in collection.find(**kwargs)
     ]
-    if len(response) == 0:
+    if len(response) == 0 and "filter" in kwargs.keys():
         raise HTTPException(404, f"Element {model.__name__} can`t be found")
     return response

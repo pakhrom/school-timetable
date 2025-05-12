@@ -83,11 +83,7 @@ def main(
         path="/{objId}",
         dependencies=[Depends(authVerification)]
     )
-    async def DeleteOne(objId: str, token: Annotated[RequestToken, Depends(security.access_token_required)] ):
-        authVerification(
-            security=security,
-            token=token
-        )
+    async def DeleteOne(objId: str):
         try:
             timetablesCollection.delete_one({"_id": ObjectId(objId)})
         except Exception as e:
