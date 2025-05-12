@@ -1,5 +1,7 @@
 import authx.exceptions
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import OAuth2PasswordBearer
 from starlette.responses import PlainTextResponse
 
 import app.FullModels
@@ -12,6 +14,23 @@ import app.routers as routers
 
 app = FastAPI(title="api")
 
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+origins = [
+    "http://localhost.tiangolo.com",
+    "https://localhost.tiangolo.com",
+    "http://localhost",
+    "http://localhost:8080",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # DB init
 mongoDB = DBLoad(
     host=mongoDBURL
@@ -19,6 +38,7 @@ mongoDB = DBLoad(
 
 # Security init
 security = authentication.createSecurity(JWTSecretKey)
+security.security.handle_errors(app)
 app.include_router(
     authentication.createRouter(
         userCollection=mongoDB.usersCollection,
@@ -69,14 +89,14 @@ app.include_router(
     routers.user.main(mongoDB.usersCollection, mongoDB.credentialCollection, security.security)
 )
 # No authorization cookie error processing
-@app.exception_handler(authx.exceptions.MissingTokenError)
+# @app.exception_handler(authx.exceptions.MissingTokenError)
 async def NoAuthCookie(request, exc):
     return PlainTextResponse(
         str(exc), status_code=403
     )
 
 # Expired auth cookie
-@app.exception_handler(authx.exceptions.JWTDecodeError)
+# @app.exception_handler(authx.exceptions.JWTDecodeError)
 async def OldCookie(request, exc):
     return PlainTextResponse(
         str(exc), status_code=401

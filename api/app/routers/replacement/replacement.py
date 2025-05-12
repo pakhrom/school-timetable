@@ -4,12 +4,12 @@ from typing import Optional, Annotated
 import bson.errors
 from pydantic import BaseModel
 
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request, Header
 from app.FullModels import ReplacementsFull, GroupFull
 from app.BaseModels import ReplacementsBase, Replacement
 from app.schemas.DBLoad import getListDicts
 from pymongo.collection import Collection
-from authx import AuthX, TokenPayload
+from authx import AuthX, TokenPayload, RequestToken
 from bson.objectid import ObjectId
 import logging
 
@@ -22,9 +22,13 @@ def main(
 
     def authorization_post(
             replacementObj: Replacement,
-            JWTData: Annotated[TokenPayload, Depends(security.access_token_required)]
-    ):
+            token: str = Header(),
+    ) -> bool:
         try:
+            JWTData = security.verify_token(RequestToken(
+                token=token,
+                location="headers"
+            ))
 
             if JWTData.role == "admin":
                 return True

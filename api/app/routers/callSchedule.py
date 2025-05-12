@@ -1,8 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Header
 from app.BaseModels import CallScheduleBase
 from app.FullModels import CallScheduleFull
 from pymongo.collection import Collection
-from authx import AuthX, TokenPayload
+from authx import AuthX, TokenPayload, RequestToken
 from typing import Annotated
 from app.utiles.dataPreprocessing import processForDB
 from app.schemas.DBLoad import getListDicts
@@ -14,8 +14,12 @@ def main(
 ) -> APIRouter:
 
     def authorization(
-            JWTData: Annotated[TokenPayload, Depends(security.access_token_required)]
-    ):
+            token: str = Header(),
+    ) -> bool:
+        JWTData = security.verify_token(RequestToken(
+            token=token,
+            location="headers"
+        ))
         if JWTData.role != "admin":
             raise HTTPException(
                 status_code=403,

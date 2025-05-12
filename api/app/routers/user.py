@@ -44,9 +44,9 @@ def main(
     @router.post(
         path="",
         response_model = dict,
-        dependencies=[Depends(security.access_token_required)]
+        # dependencies=[Depends(security.get_token_from_request)]
     )
-    async def createUser(user: UserBase, password: PasswordRequestForm, response: Response):
+    async def createUser(user: UserBase, password: PasswordRequestForm):
             try:
                 credentialCollection.insert_one(
                     CredentialFull(
@@ -64,7 +64,7 @@ def main(
                     security=security,
                 )
 
-                response.set_cookie(security.config.JWT_ACCESS_COOKIE_NAME, token)
+                # response.set_cookie(security.config.JWT_ACCESS_COOKIE_NAME, token)
                 return LoginResponse(access_token=token)
 
             except DuplicateKeyError:
@@ -75,7 +75,7 @@ def main(
 
     @router.delete(
         path="/{username}",
-        dependencies=[Depends(security.access_token_required)]
+        dependencies=[Depends(security.get_token_from_request)]
     )
     async def deleteUser(username: str):
         credentialCollection.delete_one({"username": username})

@@ -1,13 +1,13 @@
 import datetime
 from sys import prefix
-from typing import Optional
+from typing import Optional, Annotated
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Header
 from app.FullModels import ReplacementsFull
 from app.BaseModels import ReplacementsBase
 from app.schemas.DBLoad import getListDicts
 from pymongo.collection import Collection
-from authx import AuthX
+from authx import AuthX, TokenPayload, RequestToken
 from bson.objectid import ObjectId
 from app.utiles.dataPreprocessing import processForDB
 from .replacement import replacement
@@ -18,7 +18,19 @@ def main(
         security: AuthX
 ) -> APIRouter:
 
-
+    def authorization(
+            token: str = Header(),
+    ) -> bool:
+        JWTData = security.verify_token(RequestToken(
+            token=token,
+            location="headers"
+        ))
+        if JWTData.role != "admin":
+            raise HTTPException(
+                status_code=403,
+                detail="Only admins can edit teachers"
+            )
+        return True
 
     router = APIRouter(
         prefix="/replacements",
@@ -67,7 +79,7 @@ def main(
     @router.post(
         path="",
         response_model=str,
-        dependencies=[Depends(security.access_token_required)]
+        dependencies=[Depends(authorization)]
     )
     async def CreateOne(replacement: ReplacementsBase):
         response = replacementsDocsCollection.insert_one(
@@ -77,7 +89,7 @@ def main(
 
     @router.put(
         path="/{objId}",
-        dependencies=[Depends(security.access_token_required)],
+        dependencies=[Depends(authorization)],
     )
     async def UpdateOne(objId: str, replacements: ReplacementsBase):
         response = replacementsDocsCollection.update_one(
@@ -92,7 +104,7 @@ def main(
 
     @router.delete(
         path="/{objId}",
-        dependencies=[Depends(security.access_token_required)],
+        dependencies=[Depends(authorization)],
     )
     async def DeleteOne(objId: str):
         replacementsDocsCollection.delete_one({"_id": ObjectId(objId)})

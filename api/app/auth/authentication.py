@@ -30,8 +30,11 @@ def authenticate(
         userCollection: Collection,
         security: AuthX
 ) -> str:
-    selectedCredential = credentialCollection.find_one({"username": username})
-    selectedUser = UserFull(**userCollection.find_one({"username": username}))
+    try:
+        selectedCredential = credentialCollection.find_one({"username": username})
+        selectedUser = UserFull(**userCollection.find_one({"username": username}))
+    except TypeError:
+        raise HTTPException(404, "User cant be found")
     if not selectedCredential:
         # return {"detail": "No user register", "status_code": 403}
         raise HTTPException(
@@ -65,9 +68,9 @@ def authenticate(
 def createSecurity(JWTSecretKey: str) -> Security:
     authxConfig = AuthXConfig()
     authxConfig.JWT_SECRET_KEY = JWTSecretKey
-    authxConfig.JWT_COOKIE_CSRF_PROTECT = False
-    authxConfig.JWT_ACCESS_COOKIE_NAME = "access_token"
-    authxConfig.JWT_TOKEN_LOCATION = ["cookies"]
+    # authxConfig.JWT_COOKIE_CSRF_PROTECT = False
+    # authxConfig.JWT_ACCESS_COOKIE_NAME = "access_token"
+    authxConfig.JWT_TOKEN_LOCATION = ["headers"]
 
     security = AuthX(authxConfig)
     config_redacted = authxConfig.model_copy()
@@ -93,7 +96,7 @@ def createRouter(
         path="/login",
         response_model=LoginResponse
     )
-    async def login(credential: LoginRequest, response: Response):
+    async def login(credential: LoginRequest):
 
         token = authenticate(
             username=credential.username,
@@ -102,8 +105,8 @@ def createRouter(
             userCollection=userCollection,
             security=security.security
         )
-
-        response.set_cookie(security.config.JWT_ACCESS_COOKIE_NAME, token)
+        # response = Response()
+        # response.set_cookie(security.config.JWT_ACCESS_COOKIE_NAME, token)
         return LoginResponse(access_token=token)
 
     return router

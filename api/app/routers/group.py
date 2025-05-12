@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Header
 from app.BaseModels import GroupBase
 from app.FullModels import GroupFull
 
 from pymongo.collection import Collection
-from authx import AuthX, TokenPayload
+from authx import AuthX, TokenPayload, RequestToken
 from typing import Annotated
 from app.schemas.DBLoad import getListDicts
 from bson.objectid import ObjectId
@@ -15,8 +15,12 @@ def main(
 ) -> APIRouter:
 
     def authorization(
-            JWTData: Annotated[TokenPayload, Depends(security.access_token_required)]
-    ):
+            token: str = Header(),
+    ) -> bool:
+        JWTData = security.verify_token(RequestToken(
+            token=token,
+            location="headers"
+        ))
         if JWTData.role != "admin":
             raise HTTPException(
                 status_code=403,
@@ -40,7 +44,7 @@ def main(
         )
 
     @router.get(
-        path="/{onjId}",
+        path="/{objId}",
         response_model=GroupFull
     )
     async def GetOne(objId: str):

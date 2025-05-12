@@ -1,8 +1,8 @@
 from pymongo.collection import Collection
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Header
 from app.BaseModels import SubjectBase
 from app.FullModels import SubjectFull
-from authx import AuthX, TokenPayload
+from authx import AuthX, TokenPayload, RequestToken
 from app.schemas.DBLoad import getListDicts
 from bson.objectid import ObjectId
 from typing import Annotated
@@ -13,8 +13,12 @@ def main(
 ) -> APIRouter:
 
     def authorization(
-            JWTData: Annotated[TokenPayload, Depends(security.access_token_required)]
-    ):
+            token: str = Header(),
+    ) -> bool:
+        JWTData = security.verify_token(RequestToken(
+            token=token,
+            location="headers"
+        ))
         if JWTData.role != "admin":
             raise HTTPException(
                 status_code=403,

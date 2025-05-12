@@ -1,4 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException
+import logging
+
+from fastapi import APIRouter, Depends, HTTPException, Header
 from pydantic import BaseModel
 from pymongo.collection import Collection
 
@@ -25,14 +27,15 @@ def main(
 
     # authorization rules setting up
     def authVerification(
-            JWTData: Annotated[TokenPayload, Depends(security.access_token_required)],
+            token: str = Header(),
     ) -> bool:
-        try:
-            if JWTData.role == "admin":
-                return True
-            raise HTTPException(status_code=403, detail="Only admins can edit timetable")
-        except Exception as e:
-            raise HTTPException(status_code=401, detail={"message": str(e)})
+        JWTData = security.verify_token(RequestToken(
+            token=token,
+            location="headers"
+        ))
+        if JWTData.role == "admin":
+            return True
+        raise HTTPException(status_code=403, detail="Only admins can edit timetable")
 
     router = APIRouter(
         prefix="/timetables",
