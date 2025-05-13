@@ -11,6 +11,18 @@
 	padding: 0.75em;
 }
 
+.link-button {
+	padding: 0;
+
+	color: var(--pico-primary);
+	border: none;
+	background: none;
+}
+
+.link-button:hover {
+	color: var(--pico-primary-hover);
+}
+
 a {
 	display: inline-flex;
 	align-items: center;
