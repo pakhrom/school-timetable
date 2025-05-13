@@ -1,16 +1,35 @@
 import authx.exceptions
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import OAuth2PasswordBearer
 from starlette.responses import PlainTextResponse
 
-import FullModels
-from schemas.DBLoad import DBLoad
-from config import mongoDBURL, JWTSecretKey
-from auth import auth
+import app.FullModels
+from app.schemas.DBLoad import DBLoad
+from app.config import mongoDBURL, JWTSecretKey
+from app.auth import authentication
 import uvicorn
-import routers
+import app.routers as routers
 
 
 app = FastAPI(title="api")
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+origins = [
+    "http://localhost.tiangolo.com",
+    "https://localhost.tiangolo.com",
+    "http://localhost",
+    "http://localhost:8080",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # DB init
 mongoDB = DBLoad(
@@ -18,9 +37,11 @@ mongoDB = DBLoad(
 )
 
 # Security init
-security = auth.createSecurity(JWTSecretKey)
+security = authentication.createSecurity(JWTSecretKey)
+security.security.handle_errors(app)
 app.include_router(
-    auth.createRouter(
+    authentication.createRouter(
+        userCollection=mongoDB.usersCollection,
         credentialCollection=mongoDB.credentialCollection,
         security=security,
     )
@@ -48,6 +69,7 @@ app.include_router(
 app.include_router(
     routers.replacements.main(
         mongoDB.replacementsDocsCollection,
+        mongoDB.groupsCollection,
         security.security
     )
 )
@@ -57,26 +79,33 @@ app.include_router(
         security.security
     )
 )
+# app.include_router(
+#     routers.callSchedule.main(
+#         mongoDB.callSchedulesCollection,
+#         security.security
+#     )
+# )
 app.include_router(
-    routers.callSchedule.main(
-        mongoDB.callSchedulesCollection,
-        security.security
-    )
-)
-app.include_router(
-    routers.user.main(mongoDB.usersCollection, mongoDB.credentialCollection)
+    routers.user.main(mongoDB.usersCollection, mongoDB.credentialCollection, security.security)
 )
 # No authorization cookie error processing
-@app.exception_handler(authx.exceptions.MissingTokenError)
+# @app.exception_handler(authx.exceptions.MissingTokenError)
 async def NoAuthCookie(request, exc):
     return PlainTextResponse(
         str(exc), status_code=403
     )
 
+# Expired auth cookie
+# @app.exception_handler(authx.exceptions.JWTDecodeError)
+async def OldCookie(request, exc):
+    return PlainTextResponse(
+        str(exc), status_code=401
+    )
 
 if __name__ == "__main__":
     uvicorn.run(
         "main:app",
         host="0.0.0.0",
-        reload=True
+        reload=True,
+        port=8080
     )

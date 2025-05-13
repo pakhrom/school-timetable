@@ -1,0 +1,4 @@
+authx
+pymongo
+uvicorn
+fastapi[standard]
