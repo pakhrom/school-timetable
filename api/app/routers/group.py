@@ -63,7 +63,7 @@ def main(
                 )
             )
         else:
-            if groupBy == groupBy.subjects:
+            if groupBy == groupBy.subjects: 
                 keyValue = "$subjectId"
             elif groupBy == groupBy.teachers:
                 keyValue = "$teacherId"
