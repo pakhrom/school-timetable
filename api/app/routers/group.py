@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Header
 
 from app.BaseModels import GroupBase
-from app.FullModels import GroupFull, SubjectFull
+from app.FullModels import GroupFull, SubjectFull, TeacherFull
 
 from pymongo.collection import Collection
 from authx import AuthX, TokenPayload, RequestToken
@@ -42,8 +42,8 @@ def main(
 
     class groupBy(str, Enum):
         none = "none"
-        subject = "subject"
-        teacher = "teacher"
+        subjects = "subjects"
+        teachers = "teachers"
         # className = "className"
 
     @router.get(
@@ -51,17 +51,21 @@ def main(
         # response_model=list[GroupFull]
     )
     async def GetAll(
-            groupBy: groupBy,
+            groupBy: groupBy = groupBy.none,
     ):
         if groupBy == groupBy.none:
             return getListDicts(
                 collection=groupsCollection,
-                model=GroupFull
+                model=GroupFull,
+                modelLambda= lambda x: x.printOut(
+                    subjectsCollection=subjectsCollection,
+                    teacherCollection=teacherCollection
+                )
             )
         else:
-            if groupBy == groupBy.subject:
+            if groupBy == groupBy.subjects:
                 keyValue = "$subjectId"
-            elif groupBy == groupBy.teacher:
+            elif groupBy == groupBy.teachers:
                 keyValue = "$teacherId"
             else:
                 raise HTTPException(422, "Wrong grouping")
@@ -76,7 +80,10 @@ def main(
             cursor = groupsCollection.aggregate(pipeline)
             response = {
                 str(doc["_id"]): [
-                    GroupFull(**el) for el in doc["items"]
+                    GroupFull(**el).printOut(
+                        subjectsCollection=subjectsCollection,
+                        teacherCollection=teacherCollection,
+                    ) for el in doc["items"]
                 ] for doc in cursor
             }
             return response

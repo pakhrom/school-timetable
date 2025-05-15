@@ -4,7 +4,7 @@ from enum import unique
 from anyio.to_process import current_default_process_limiter
 from bson import ObjectId
 from fastapi import HTTPException
-from typing import TypeVar
+from typing import TypeVar, Callable
 
 import pymongo
 from pydantic import BaseModel
@@ -49,13 +49,19 @@ class DBLoad:
                 msg=f"Cant connect to mongoDB:\n{e}"
             )
 
-def getListDicts(collection: Collection, model, **kwargs) -> list:
+def getListDicts(
+        collection: Collection,
+        model,
+        filter: dict = (),
+        modelLambda: Callable = lambda x: x,
+        **kwargs,
+) -> list:
 
     response = [
-        model(
+        modelLambda(model(
             objId=str(element.pop("_id")),
             **element
-        ) for element in collection.find(**kwargs)
+        )) for element in collection.find(filter=filter, **kwargs)
     ]
     if len(response) == 0 and "filter" in kwargs.keys():
         raise HTTPException(404, f"Element {model.__name__} can`t be found")

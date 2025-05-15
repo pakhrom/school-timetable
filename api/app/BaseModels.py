@@ -109,6 +109,19 @@ class GroupBase(BaseModel):
 
         return 0
 
+    def printOut(
+            self,
+            subjectsCollection: Collection,
+            teacherCollection: Collection,
+    ):
+        from FullModels import SubjectFull, TeacherFull
+        return self.model_dump(
+            exclude={"subjectId", "teacherId"}
+        ) | {
+            "subject": SubjectFull(**subjectsCollection.find_one({"_id": ObjectId(self.subjectId)})),
+            "teacher": TeacherFull(**teacherCollection.find_one({"_id": ObjectId(self.teacherId)}))
+        }
+
 class Gender(str, Enum):
     male = 'male'
     female = 'female'
