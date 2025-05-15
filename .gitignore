@@ -6,3 +6,4 @@ api/config.py
 api/app/config.py
 /api/__pycache__
 /api/__pycache__
+api/secretsVariables.py

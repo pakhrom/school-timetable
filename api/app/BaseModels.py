@@ -1,6 +1,6 @@
 import datetime
 from typing import Optional
-from pydantic import BaseModel, field_validator, ValidationError
+from pydantic import BaseModel, field_validator, ValidationError, Field
 from enum import Enum
 import hashlib
 from pymongo.synchronous.collection import Collection
@@ -17,7 +17,7 @@ class GroupBase(BaseModel):
     subjectId: str
     teacherId: str
     cabinet: str
-    attendPeriodicity: int
+    attendPeriodicity: int = Field(gt=0)
 
     @classmethod
     def pairGroup(
