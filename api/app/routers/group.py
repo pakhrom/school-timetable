@@ -1,17 +1,24 @@
 from fastapi import APIRouter, Depends, HTTPException, Header
+
 from app.BaseModels import GroupBase
-from app.FullModels import GroupFull
+from app.FullModels import GroupFull, SubjectFull
 
 from pymongo.collection import Collection
 from authx import AuthX, TokenPayload, RequestToken
 from typing import Annotated
+from typing_extensions import TypedDict
 from app.schemas.DBLoad import getListDicts
 from bson.objectid import ObjectId
 from app.utiles.dataPreprocessing import processForDB
+from enum import Enum
+from pydantic import BaseModel, ConfigDict
+
 
 def main(
         groupsCollection: Collection,
-        security: AuthX
+        security: AuthX,
+        teacherCollection: Collection,
+        subjectsCollection: Collection,
 ) -> APIRouter:
 
     def authorization(
@@ -33,15 +40,46 @@ def main(
         tags=["Group"]
     )
 
+    class groupBy(str, Enum):
+        none = "none"
+        subject = "subject"
+        teacher = "teacher"
+        # className = "className"
+
     @router.get(
         path="",
-        response_model=list[GroupFull]
+        # response_model=list[GroupFull]
     )
-    async def GetAll():
-        return getListDicts(
-            collection=groupsCollection,
-            model=GroupFull
-        )
+    async def GetAll(
+            groupBy: groupBy,
+    ):
+        if groupBy == groupBy.none:
+            return getListDicts(
+                collection=groupsCollection,
+                model=GroupFull
+            )
+        else:
+            if groupBy == groupBy.subject:
+                keyValue = "$subjectId"
+            elif groupBy == groupBy.teacher:
+                keyValue = "$teacherId"
+            else:
+                raise HTTPException(422, "Wrong grouping")
+
+            pipeline = [
+                {"$group": {
+                    "_id": keyValue,
+                    "items": {"$push": "$$ROOT"}
+                }}
+            ]
+
+            cursor = groupsCollection.aggregate(pipeline)
+            response = {
+                str(doc["_id"]): [
+                    GroupFull(**el) for el in doc["items"]
+                ] for doc in cursor
+            }
+            return response
 
     @router.get(
         path="/{objId}",
@@ -67,6 +105,19 @@ def main(
             baseObject=group,
             fullModel=GroupFull
         ))
+
+        GroupBase.pairGroup(
+            collection=[
+                subjectsCollection,
+                teacherCollection,
+            ],
+            addId=str(response.inserted_id),
+            selectId=[
+                group.subjectId,
+                group.teacherId
+            ]
+        )
+
         return ObjectId(response.inserted_id)
 
     @router.put(
@@ -86,6 +137,25 @@ def main(
         dependencies=[Depends(authorization)]
     )
     async def DeleteOne(objId: str):
+
+        group: GroupFull = getListDicts(
+            collection=groupsCollection,
+            model=GroupFull,
+            filter={"_id": ObjectId(objId)}
+        )[0]
+
+        GroupBase.unpairGroup(
+            collection=[
+                subjectsCollection,
+                teacherCollection,
+            ],
+            delId=objId,
+            selectId=[
+                group.subjectId,
+                group.teacherId
+            ]
+        )
+
         response = groupsCollection.delete_one({"_id": ObjectId(objId)})
 
         if response.deleted_count == 0:

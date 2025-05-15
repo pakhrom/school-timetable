@@ -11,21 +11,14 @@ from app.auth import authentication
 import uvicorn
 import app.routers as routers
 
+from pydantic import BaseModel
+from bson import ObjectId
 
 app = FastAPI(title="api")
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-
-origins = [
-    "http://localhost.tiangolo.com",
-    "https://localhost.tiangolo.com",
-    "http://localhost",
-    "http://localhost:8080",
-]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -76,7 +69,9 @@ app.include_router(
 app.include_router(
     routers.group.main(
         mongoDB.groupsCollection,
-        security.security
+        security.security,
+        mongoDB.teachersCollection,
+        mongoDB.subjectCollection
     )
 )
 # app.include_router(

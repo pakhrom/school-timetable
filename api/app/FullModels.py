@@ -1,13 +1,23 @@
 # import datetime
 # from typing import Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, BeforeValidator, Field, AliasChoices
 # from enum import Enum
 import app.BaseModels as bm
 import datetime
-from typing import Optional
+from typing import Optional, Annotated
+from bson import ObjectId
+
+PyObjectId = Annotated[str, BeforeValidator(str)]
 
 class _AllServerBase(BaseModel):
-    objId: Optional[str] = None
+    class Config:
+        arbitrary_types_allowed = True
+
+    objId: Optional[PyObjectId] | Optional[str] = Field(
+        default=None,
+        validation_alias=AliasChoices('objId', '_id'),
+        serialization_alias='objId'
+    )
     updateDate: datetime.datetime = datetime.datetime.now()
 
 class TimetableFull(bm.TimetableBase, _AllServerBase):

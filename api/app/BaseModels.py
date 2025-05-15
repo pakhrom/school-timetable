@@ -3,18 +3,111 @@ from typing import Optional
 from pydantic import BaseModel, field_validator, ValidationError
 from enum import Enum
 import hashlib
+from pymongo.synchronous.collection import Collection
+from bson import ObjectId
 
 
 class SubjectBase(BaseModel):
     shortName: str
     fullName: str
-    isNeedToAttend: bool
+    optional: bool
+    groupsIds: list[str] = []
 
 class GroupBase(BaseModel):
-    subjectId: int
-    teacherId: int
+    subjectId: str
+    teacherId: str
     cabinet: str
     attendPeriodicity: int
+
+    @classmethod
+    def pairGroup(
+            cls,
+            collection: Collection | list[Collection],
+            addId: str,
+            selectId: str | list[str],
+    ):
+        def pairOneElement(
+                collection: Collection,
+                addId: str,
+                selectId: str,
+        ):
+            pairedGroups: list[str] = collection.find_one(
+                filter={"_id": ObjectId(selectId)}
+            )["groupsIds"]
+
+            pairedGroups.append(addId)
+
+            return collection.update_one(
+                filter={"_id": ObjectId(selectId)},
+                update={"$set": {
+                    "groupsIds": pairedGroups,
+                    "updateDate": datetime.datetime.now()
+                }}
+            )
+
+        if type(selectId) == list and type(collection) == list:
+            for oneSelectId, oneCollection in zip(selectId, collection):
+                pairOneElement(
+                    collection=oneCollection,
+                    addId=addId,
+                    selectId=oneSelectId
+                )
+
+        elif type(selectId) == str and type(collection) == Collection:
+            pairOneElement(
+                collection=collection,
+                addId=addId,
+                selectId=selectId
+            )
+        else:
+            raise TypeError("Pass all lists of elements or single element")
+
+        return 0
+
+    @classmethod
+    def unpairGroup(
+            cls,
+            collection: Collection | list[Collection],
+            delId: str,
+            selectId: str | list[str],
+    ):
+        def unpairOneElement(
+                collection: Collection,
+                delId: str,
+                selectId: str,
+        ):
+            pairedGroups: list[str] = collection.find_one(
+                filter={"_id": ObjectId(selectId)}
+            )["groupsIds"]
+
+            pairedGroups.remove(delId)
+
+            return collection.update_one(
+                filter={"_id": ObjectId(selectId)},
+                update={"$set": {
+                    "groupsIds": pairedGroups,
+                    "updateDate": datetime.datetime.now()
+                }}
+            )
+
+        if type(selectId) == list and type(collection) == list:
+            for oneSelectId, oneCollection in zip(selectId, collection):
+                unpairOneElement(
+                    collection=oneCollection,
+                    delId=delId,
+                    selectId=oneSelectId
+                )
+
+        elif type(selectId) == str and type(collection) == Collection:
+            unpairOneElement(
+                collection=collection,
+                delId=delId,
+                selectId=selectId
+            )
+        else:
+            raise TypeError("Pass all lists of elements or single element")
+
+        return 0
 
 class Gender(str, Enum):
     male = 'male'
@@ -28,6 +121,7 @@ class FullName(BaseModel):
 class TeacherBase(BaseModel):
     gender: Gender
     fullname: FullName
+    groupsIds: list[str] = []
 
 class Replacement(BaseModel):
     lesson: int
@@ -42,11 +136,11 @@ class ReplacementsBase(BaseModel):
 
 class TimetableBase(BaseModel):
     className: str
-    groupsIds: list[int]
+    groupsIds: list[str]
     week: list[
         list[
             list[
-                int # groupId
+                str # groupId
             ]
         ]
     ]
