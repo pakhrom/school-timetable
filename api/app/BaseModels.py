@@ -114,7 +114,7 @@ class GroupBase(BaseModel):
             subjectsCollection: Collection,
             teacherCollection: Collection,
     ):
-        from FullModels import SubjectFull, TeacherFull
+        from app.FullModels import SubjectFull, TeacherFull
         return self.model_dump(
             exclude={"subjectId", "teacherId"}
         ) | {

@@ -108,11 +108,15 @@ def main(
         response_model=str
     )
     async def CreateOne(group: GroupBase):
+        if not teacherCollection.find_one({"_id": ObjectId(group.teacherId)}):
+            raise HTTPException(422, "No such teacher to pair")
+        if not subjectsCollection.find_one({"_id": ObjectId(group.subjectId)}):
+            raise HTTPException(422, "No such subject to pair")
+
         response = groupsCollection.insert_one(processForDB(
             baseObject=group,
             fullModel=GroupFull
         ))
-
         GroupBase.pairGroup(
             collection=[
                 subjectsCollection,
@@ -125,7 +129,7 @@ def main(
             ]
         )
 
-        return ObjectId(response.inserted_id)
+        return str(response.inserted_id)
 
     @router.put(
         path="/{objId}",

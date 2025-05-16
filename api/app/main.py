@@ -68,10 +68,10 @@ app.include_router(
 )
 app.include_router(
     routers.group.main(
-        mongoDB.groupsCollection,
-        security.security,
-        mongoDB.teachersCollection,
-        mongoDB.subjectCollection
+        groupsCollection=mongoDB.groupsCollection,
+        security=security.security,
+        teacherCollection=mongoDB.teachersCollection,
+        subjectsCollection=mongoDB.subjectCollection
     )
 )
 # app.include_router(
