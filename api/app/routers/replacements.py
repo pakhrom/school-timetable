@@ -85,7 +85,7 @@ def main(
         response = replacementsDocsCollection.insert_one(
             ReplacementsFull(**replacement.model_dump()).model_dump(exclude={"objId"})
         )
-        return int(response.inserted_id)
+        return str(response.inserted_id)
 
     @router.put(
         path="/{objId}",

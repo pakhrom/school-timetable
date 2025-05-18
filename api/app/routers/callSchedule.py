@@ -67,7 +67,7 @@ def main(
             baseObject=group,
             fullModel=CallScheduleFull
         ))
-        return ObjectId(response.inserted_id)
+        return str(response.inserted_id)
 
     @router.put(
         path="/{objId}",
