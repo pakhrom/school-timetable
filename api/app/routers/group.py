@@ -162,6 +162,11 @@ def main(
             filter={"_id": ObjectId(objId)}
         )[0]
 
+        response = groupsCollection.delete_one({"_id": ObjectId(objId)})
+
+        if response.deleted_count == 0:
+            raise HTTPException(status_code=404, detail="Group not found")
+
         GroupBase.unpairGroup(
             collection=[
                 subjectsCollection,
@@ -174,9 +179,6 @@ def main(
             ]
         )
 
-        response = groupsCollection.delete_one({"_id": ObjectId(objId)})
 
-        if response.deleted_count == 0:
-            raise HTTPException(status_code=404, detail="Group not found")
 
     return router
