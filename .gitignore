@@ -3,3 +3,4 @@
 api/secretsVariables.py
 /api/.run
 *.pyc
+/api/app/__pycache__
