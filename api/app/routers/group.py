@@ -108,7 +108,11 @@ def main(
         response_model=str
     )
     async def CreateOne(group: GroupBase):
-
+        if not group.verify_dependencies(
+            teachersCollection=teachersCollection,
+            subjectsCollection=subjectsCollection,
+        ):
+            raise HTTPException(422, "Can`t verify group dependencies")
         response = groupsCollection.insert_one(processForDB(
             baseObject=group,
             fullModel=GroupFull
@@ -133,6 +137,12 @@ def main(
         dependencies=[Depends(authorization)]
     )
     async def UpdateOne(objId: str, group: GroupBase):
+        if not group.verify_dependencies(
+                teachersCollection=teachersCollection,
+                subjectsCollection=subjectsCollection,
+        ):
+            raise HTTPException(422, "Can`t verify group dependencies")
+
         response = groupsCollection.update_one(
             {"_id": ObjectId(objId)},
             {"$set": processForDB(group, GroupFull)}

@@ -1,6 +1,7 @@
 import datetime
-from typing import Optional
-from pydantic import BaseModel, field_validator, ValidationError, Field
+import logging
+from typing import Optional, Annotated
+from pydantic import BaseModel, field_validator, ValidationError, Field, model_validator
 from enum import Enum
 import hashlib
 from pymongo.synchronous.collection import Collection
@@ -8,15 +9,15 @@ from bson import ObjectId
 
 
 class SubjectBase(BaseModel):
-    shortName: str
-    fullName: str
-    optional: bool
+    shortName: str = Field(min_length=1, max_length=10)
+    fullName: str = Field(min_length=1, max_length=20)
+    optional: bool = False
     groupsIds: list[str] = []
 
 class GroupBase(BaseModel):
-    subjectId: str
-    teacherId: str
-    cabinet: str
+    subjectId: str = Field(min_length=24, max_length=24)
+    teacherId: str = Field(min_length=24, max_length=24)
+    cabinet: str = Field(min_length=3, max_length=20)
     attendPeriodicity: int = Field(gt=0)
 
     @classmethod
@@ -114,7 +115,7 @@ class GroupBase(BaseModel):
             subjectsCollection: Collection,
             teacherCollection: Collection,
     ):
-        from FullModels import SubjectFull, TeacherFull
+        from app.FullModels import SubjectFull, TeacherFull
         return self.model_dump(
             exclude={"subjectId", "teacherId"}
         ) | {
@@ -127,54 +128,101 @@ class GroupBase(BaseModel):
             teachersCollection: Collection,
             subjectsCollection: Collection,
     ) -> bool:
-        from FullModels import TeacherFull, SubjectFull
-        teacherVer = TeacherFull(
-            **teachersCollection.find_one({"_id": ObjectId(self.teacherId)})
-        ).verify(teachersCollection)
-        subjectVer = SubjectFull(
-            **subjectsCollection.find_one({"_id": ObjectId(self.subjectId)})
-        ).verify(subjectsCollection)
-        return teacherVer * subjectVer
+        logger = logging.getLogger("uvicorn.debug")
+        if not teachersCollection.find_one({"_id": ObjectId(self.teacherId)}):
+            logger.debug("Unable to find teacher")
+            return False
+
+        if not subjectsCollection.find_one({"_id": ObjectId(self.subjectId)}):
+            logger.debug("unable to find subject")
+            return False
+
+        return True
 
 class Gender(str, Enum):
     male = 'male'
     female = 'female'
 
 class FullName(BaseModel):
-    first: str
-    last: str
-    middle: str
+    first: str = Field(min_length=1, max_length=15)
+    last: str = Field(min_length=1, max_length=15)
+    middle: str = Field(min_length=1, max_length=15)
 
 class TeacherBase(BaseModel):
     gender: Gender
     fullname: FullName
-    groupsIds: list[str] = []
+    groupsIds: list[Annotated[str, Field(min_length=24, max_length=24)]] = []
 
 class Replacement(BaseModel):
-    lesson: int
-    reason: Optional[str]
-    oldGroupId: str
-    newGroupId: Optional[str]
+    lesson: int = Field(gt=0, lt=13)
+    reason: Optional[str] = Field(max_length=20)
+    oldGroupId: str = Field(min_length=24, max_length=24)
+    newGroupId: Optional[str] = Field(min_length=24, max_length=24)
+
+    def verify_dependencies(
+            self,
+            groupsCollection: Collection,
+    ) -> bool:
+        logger = logging.getLogger("uvicorn.debug")
+        DBResponse_oldG = groupsCollection.find_one({"_id": ObjectId(self.oldGroupId)})
+        if not DBResponse_oldG:
+            logger.debug("Unable to find old group")
+            return False
+        if self.newGroupId:
+            DBResponse_newG = groupsCollection.find_one({"_id": ObjectId(self.newGroupId)})
+            if not DBResponse_newG:
+                logger.debug("Unable to find new group")
+                return False
+        return True
+
 
 class ReplacementsBase(BaseModel):
     date: datetime.datetime
     modifiedGroups: Optional[list[Replacement]] = []
-    callScheduleId: Optional[str]
+    callScheduleId: Optional[str] = Field(min_length=24, max_length=24)
+
+    def verify_dependencies(
+            self,
+            callSchedulesCollection: Collection,
+    ) -> bool:
+        if not callSchedulesCollection.find_one({"_id": ObjectId(self.callScheduleId)}):
+            logger = logging.getLogger("uvicorn.debug")
+            logger.debug("Couldn`t find callSchedule object")
 
 class TimetableBase(BaseModel):
-    className: str
-    groupsIds: list[str]
-    week: list[
-        list[
-            list[
-                str # groupId
-            ]
-        ]
-    ]
+    className: str = Field(min_length=2, max_length=10)
+    groupsIds: list[Annotated[str, Field(min_length=24, max_length=24)]]
+    week: list[Annotated[
+        list[Annotated[list[
+            Annotated[str, Field(min_length=24, max_length=24)]  # groupId
+        ], Field(min_length=0, max_length=13)]
+        ], Field(min_length=6, max_length=7)
+    ]]
+
+    @model_validator(mode="before")
+    def groups_is_equal(
+            cls,
+            model
+    ):
+        # logger = logging.getLogger("uvicorn.debug")
+        uniqueGroups = set()
+        for day in model["week"]:
+            for lesson in day:
+                uniqueGroups.update(lesson)
+
+        if not uniqueGroups == set(model["groupsIds"]):
+            # logger.debug("Listed groups not the same as in the week")
+            raise ValidationError("Listed groups not the same as in the week")
+
+    def verify_dependencies(
+            self,
+            groupsCollection: Collection,
+    ) -> bool:
+        pass
 
 class CallScheduleBase(BaseModel):
-    name: str
-    lessonDuration: int
+    name: str = Field(max_length=25)
+    lessonDuration: int = Field(gt=0, lt=150)
     lessonStartTimes: list[datetime.datetime]
 
 class UserRole(str, Enum):
@@ -183,9 +231,9 @@ class UserRole(str, Enum):
 
 class UserBase(BaseModel):
     displayName: str
-    username: str
+    username: str = Field(max_length=18)
     role: UserRole
-    connectedTeacher: Optional[str]
+    connectedTeacher: Optional[str] = Field(min_length=24, max_length=24)
 
     @field_validator("connectedTeacher")
     def connectedTeacherMustbeSetted(cls, value, values: dict):
