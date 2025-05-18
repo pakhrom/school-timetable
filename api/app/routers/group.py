@@ -31,7 +31,7 @@ def main(
         if JWTData.role != "admin":
             raise HTTPException(
                 status_code=403,
-                detail="Only admins can edit teachers"
+                detail="Only admins can edit group"
             )
         return True
 
