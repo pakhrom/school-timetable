@@ -124,12 +124,10 @@ class GroupBase(BaseModel):
 
     def verify_dependencies(
             self,
-            groupCollection: Collection,
             teachersCollection: Collection,
             subjectsCollection: Collection,
     ) -> bool:
         from FullModels import TeacherFull, SubjectFull
-        # selfVer = self.verify(groupCollection)
         teacherVer = TeacherFull(
             **teachersCollection.find_one({"_id": ObjectId(self.teacherId)})
         ).verify(teachersCollection)
