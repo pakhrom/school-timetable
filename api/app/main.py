@@ -63,6 +63,7 @@ app.include_router(
     routers.replacements.main(
         mongoDB.replacementsDocsCollection,
         mongoDB.groupsCollection,
+        mongoDB.callSchedulesCollection,
         security.security
     )
 )

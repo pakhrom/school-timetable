@@ -185,10 +185,11 @@ class ReplacementsBase(BaseModel):
             self,
             callSchedulesCollection: Collection,
     ) -> bool:
-        if not callSchedulesCollection.find_one({"_id": ObjectId(self.callScheduleId)}):
-            logger = logging.getLogger("uvicorn.debug")
-            logger.debug("Couldn`t find callSchedule object")
-            return False
+        if self.callScheduleId:
+            if not callSchedulesCollection.find_one({"_id": ObjectId(self.callScheduleId)}):
+                logger = logging.getLogger("uvicorn.debug")
+                logger.debug("Couldn`t find callSchedule object")
+                return False
         return True
 
 class TimetableBase(BaseModel):
