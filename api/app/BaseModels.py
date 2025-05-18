@@ -3,7 +3,7 @@ import logging
 from typing import Optional, Annotated
 from pydantic import BaseModel, field_validator, ValidationError, Field, model_validator
 from enum import Enum
-import hashlib
+# import hashlib
 from pymongo.synchronous.collection import Collection
 from bson import ObjectId
 
@@ -188,10 +188,12 @@ class ReplacementsBase(BaseModel):
         if not callSchedulesCollection.find_one({"_id": ObjectId(self.callScheduleId)}):
             logger = logging.getLogger("uvicorn.debug")
             logger.debug("Couldn`t find callSchedule object")
+            return False
+        return True
 
 class TimetableBase(BaseModel):
     className: str = Field(min_length=2, max_length=10)
-    groupsIds: list[Annotated[str, Field(min_length=24, max_length=24)]]
+    groupsIds: list[Annotated[str, Field(min_length=24, max_length=24)]] = []
     week: list[Annotated[
         list[Annotated[list[
             Annotated[str, Field(min_length=24, max_length=24)]  # groupId
@@ -199,26 +201,28 @@ class TimetableBase(BaseModel):
         ], Field(min_length=6, max_length=7)
     ]]
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def groups_is_equal(
-            cls,
-            model
+            self
     ):
         # logger = logging.getLogger("uvicorn.debug")
         uniqueGroups = set()
-        for day in model["week"]:
+        for day in self.week:
             for lesson in day:
                 uniqueGroups.update(lesson)
 
-        if not uniqueGroups == set(model["groupsIds"]):
+        if not uniqueGroups == set(self.groupsIds):
             # logger.debug("Listed groups not the same as in the week")
-            raise ValidationError("Listed groups not the same as in the week")
+            self.groupsIds = list(uniqueGroups)
 
     def verify_dependencies(
             self,
             groupsCollection: Collection,
     ) -> bool:
-        pass
+        for groupId in self.groupsIds:
+            if not groupsCollection.find_one({"_id": ObjectId(groupId)}):
+                return False
+        return True
 
 class CallScheduleBase(BaseModel):
     name: str = Field(max_length=25)
