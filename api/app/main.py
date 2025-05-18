@@ -14,7 +14,7 @@ import app.routers as routers
 from pydantic import BaseModel
 from bson import ObjectId
 
-app = FastAPI(title="api")
+app = FastAPI(title="api", version="v0.1.0.0")
 
 app.add_middleware(
     CORSMiddleware,
