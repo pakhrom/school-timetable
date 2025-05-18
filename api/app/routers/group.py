@@ -17,7 +17,7 @@ from pydantic import BaseModel, ConfigDict
 def main(
         groupsCollection: Collection,
         security: AuthX,
-        teacherCollection: Collection,
+        teachersCollection: Collection,
         subjectsCollection: Collection,
 ) -> APIRouter:
 
@@ -59,7 +59,7 @@ def main(
                 model=GroupFull,
                 modelLambda= lambda x: x.printOut(
                     subjectsCollection=subjectsCollection,
-                    teacherCollection=teacherCollection
+                    teacherCollection=teachersCollection
                 )
             )
         else:
@@ -82,7 +82,7 @@ def main(
                 str(doc["_id"]): [
                     GroupFull(**el).printOut(
                         subjectsCollection=subjectsCollection,
-                        teacherCollection=teacherCollection,
+                        teacherCollection=teachersCollection,
                     ) for el in doc["items"]
                 ] for doc in cursor
             }
@@ -108,6 +108,7 @@ def main(
         response_model=str
     )
     async def CreateOne(group: GroupBase):
+
         response = groupsCollection.insert_one(processForDB(
             baseObject=group,
             fullModel=GroupFull
@@ -116,7 +117,7 @@ def main(
         GroupBase.pairGroup(
             collection=[
                 subjectsCollection,
-                teacherCollection,
+                teachersCollection,
             ],
             addId=str(response.inserted_id),
             selectId=[
@@ -154,7 +155,7 @@ def main(
         GroupBase.unpairGroup(
             collection=[
                 subjectsCollection,
-                teacherCollection,
+                teachersCollection,
             ],
             delId=objId,
             selectId=[

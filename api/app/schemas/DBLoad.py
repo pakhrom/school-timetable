@@ -31,7 +31,7 @@ class DBLoad:
             )
 
             self.DB = client.TimetableProject
-            self.subjectCollection: Collection = self.DB["subjects"]
+            self.subjectsCollection: Collection = self.DB["subjects"]
             self.groupsCollection: Collection = self.DB["groups"]
             self.teachersCollection: Collection = self.DB["teachers"]
             self.replacementsDocsCollection: Collection = self.DB["replacementsDocs"]
@@ -41,8 +41,8 @@ class DBLoad:
             self.usersCollection: Collection = self.DB["users"]
             self.usersCollection.create_index("username", unique=True)
 
-            self.credentialCollection: Collection = self.DB["credentials"]
-            self.credentialCollection.create_index("username", unique=True)
+            self.credentialsCollection: Collection = self.DB["credentials"]
+            self.credentialsCollection.create_index("username", unique=True)
 
         except pymongo.mongo_client.ConnectionFailure as e:
             logger.error(

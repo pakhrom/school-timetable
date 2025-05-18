@@ -35,7 +35,7 @@ security.security.handle_errors(app)
 app.include_router(
     authentication.createRouter(
         userCollection=mongoDB.usersCollection,
-        credentialCollection=mongoDB.credentialCollection,
+        credentialCollection=mongoDB.credentialsCollection,
         security=security,
     )
 )
@@ -55,7 +55,7 @@ app.include_router(
 )
 app.include_router(
     routers.subject.main(
-        mongoDB.subjectCollection,
+        mongoDB.subjectsCollection,
         security.security
     )
 )
@@ -71,7 +71,7 @@ app.include_router(
         mongoDB.groupsCollection,
         security.security,
         mongoDB.teachersCollection,
-        mongoDB.subjectCollection
+        mongoDB.subjectsCollection
     )
 )
 # app.include_router(
@@ -81,7 +81,7 @@ app.include_router(
 #     )
 # )
 app.include_router(
-    routers.user.main(mongoDB.usersCollection, mongoDB.credentialCollection, security.security)
+    routers.user.main(mongoDB.usersCollection, mongoDB.credentialsCollection, security.security)
 )
 # No authorization cookie error processing
 # @app.exception_handler(authx.exceptions.MissingTokenError)
