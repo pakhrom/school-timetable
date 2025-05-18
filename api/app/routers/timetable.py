@@ -22,7 +22,8 @@ class headerTimetableObjectDict(BaseModel):
 
 def main(
         timetablesCollection: Collection,
-        security: AuthX
+        groupsCollection: Collection,
+        security: AuthX,
 ) -> APIRouter:
 
     # authorization rules setting up
@@ -95,6 +96,10 @@ def main(
     )
     async def UpdateOne(objId: str, timetable: TimetableFull):
         try:
+            if not timetable.verify_dependencies(
+                groupsCollection=groupsCollection
+            ):
+                raise HTTPException(422, "Cant verify timetable")
             timetablesCollection.update_one({"_id": ObjectId(objId)}, {"$set": TimetableFull(
                 **timetable.model_dump()
             ).model_dump(exclude={"objId"})})
@@ -107,6 +112,10 @@ def main(
     )
     async def CreateOne(timetable: TimetableBase):
         try:
+            if not timetable.verify_dependencies(
+                groupsCollection=groupsCollection
+            ):
+                raise HTTPException(422, "Cant verify timetable")
             result = timetablesCollection.insert_one(
                 TimetableFull(**timetable.model_dump()).model_dump(exclude={"objId"})
             )

@@ -99,6 +99,8 @@ def main(
             replacementsObjId: str
     ):
         try:
+            if not replacementObj.verify_dependencies(groupsCollection=groupsCollection):
+                raise HTTPException(422, "Invalid group: doesn`t exist")
             selectedReplacementsDoc: list[ReplacementsFull] = getListDicts(
                 collection=replacementsDocsCollection,
                 model=ReplacementsFull,

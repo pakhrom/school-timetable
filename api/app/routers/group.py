@@ -17,7 +17,7 @@ from pydantic import BaseModel, ConfigDict
 def main(
         groupsCollection: Collection,
         security: AuthX,
-        teacherCollection: Collection,
+        teachersCollection: Collection,
         subjectsCollection: Collection,
 ) -> APIRouter:
 
@@ -31,7 +31,7 @@ def main(
         if JWTData.role != "admin":
             raise HTTPException(
                 status_code=403,
-                detail="Only admins can edit teachers"
+                detail="Only admins can edit group"
             )
         return True
 
@@ -59,7 +59,7 @@ def main(
                 model=GroupFull,
                 modelLambda= lambda x: x.printOut(
                     subjectsCollection=subjectsCollection,
-                    teacherCollection=teacherCollection
+                    teacherCollection=teachersCollection
                 )
             )
         else:
@@ -82,7 +82,7 @@ def main(
                 str(doc["_id"]): [
                     GroupFull(**el).printOut(
                         subjectsCollection=subjectsCollection,
-                        teacherCollection=teacherCollection,
+                        teacherCollection=teachersCollection,
                     ) for el in doc["items"]
                 ] for doc in cursor
             }
@@ -108,11 +108,12 @@ def main(
         response_model=str
     )
     async def CreateOne(group: GroupBase):
-        if not teacherCollection.find_one({"_id": ObjectId(group.teacherId)}):
-            raise HTTPException(422, "No such teacher to pair")
-        if not subjectsCollection.find_one({"_id": ObjectId(group.subjectId)}):
-            raise HTTPException(422, "No such subject to pair")
-
+        if not group.verify_dependencies(
+            teachersCollection=teachersCollection,
+            subjectsCollection=subjectsCollection,
+        ):
+            raise HTTPException(422, "Can`t verify group dependencies")
+            
         response = groupsCollection.insert_one(processForDB(
             baseObject=group,
             fullModel=GroupFull
@@ -120,7 +121,7 @@ def main(
         GroupBase.pairGroup(
             collection=[
                 subjectsCollection,
-                teacherCollection,
+                teachersCollection,
             ],
             addId=str(response.inserted_id),
             selectId=[
@@ -136,6 +137,12 @@ def main(
         dependencies=[Depends(authorization)]
     )
     async def UpdateOne(objId: str, group: GroupBase):
+        if not group.verify_dependencies(
+                teachersCollection=teachersCollection,
+                subjectsCollection=subjectsCollection,
+        ):
+            raise HTTPException(422, "Can`t verify group dependencies")
+
         response = groupsCollection.update_one(
             {"_id": ObjectId(objId)},
             {"$set": processForDB(group, GroupFull)}
@@ -155,10 +162,15 @@ def main(
             filter={"_id": ObjectId(objId)}
         )[0]
 
+        response = groupsCollection.delete_one({"_id": ObjectId(objId)})
+
+        if response.deleted_count == 0:
+            raise HTTPException(status_code=404, detail="Group not found")
+
         GroupBase.unpairGroup(
             collection=[
                 subjectsCollection,
-                teacherCollection,
+                teachersCollection,
             ],
             delId=objId,
             selectId=[
@@ -167,9 +179,6 @@ def main(
             ]
         )
 
-        response = groupsCollection.delete_one({"_id": ObjectId(objId)})
 
-        if response.deleted_count == 0:
-            raise HTTPException(status_code=404, detail="Group not found")
 
     return router
