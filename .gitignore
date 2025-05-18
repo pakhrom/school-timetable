@@ -1,7 +1,7 @@
+*.pyc
 /api/.idea
 /api/__pycache__
 */__pycache__
 api/secretsVariables.py
 /api/.run
-*.pyc
-/api/app/__pycache__
+*/__pycache__
