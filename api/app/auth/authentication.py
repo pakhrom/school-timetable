@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from authx import AuthXConfig, AuthX
 from pymongo.collection import Collection
 from fastapi import APIRouter, HTTPException, Response
@@ -20,7 +20,7 @@ class LoginResponse(TypedDict):
 
 class LoginRequest(BaseModel):
     username: str
-    password: str
+    password: str = Field(min_length=10, max_length=50)
 
 
 def authenticate(
