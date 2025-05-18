@@ -44,7 +44,8 @@ app.include_router(
 app.include_router(
     routers.timetable.main(
         mongoDB.timetablesCollection,
-        security.security
+        mongoDB.groupsCollection,
+        security.security,
     )
 )
 app.include_router(
