@@ -11,21 +11,14 @@ from app.auth import authentication
 import uvicorn
 import app.routers as routers
 
+from pydantic import BaseModel
+from bson import ObjectId
 
-app = FastAPI(title="api")
-
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-
-origins = [
-    "http://localhost.tiangolo.com",
-    "https://localhost.tiangolo.com",
-    "http://localhost",
-    "http://localhost:8080",
-]
+app = FastAPI(title="api", version="v0.1.0.0")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -42,7 +35,7 @@ security.security.handle_errors(app)
 app.include_router(
     authentication.createRouter(
         userCollection=mongoDB.usersCollection,
-        credentialCollection=mongoDB.credentialCollection,
+        credentialCollection=mongoDB.credentialsCollection,
         security=security,
     )
 )
@@ -51,7 +44,8 @@ app.include_router(
 app.include_router(
     routers.timetable.main(
         mongoDB.timetablesCollection,
-        security.security
+        mongoDB.groupsCollection,
+        security.security,
     )
 )
 app.include_router(
@@ -62,7 +56,7 @@ app.include_router(
 )
 app.include_router(
     routers.subject.main(
-        mongoDB.subjectCollection,
+        mongoDB.subjectsCollection,
         security.security
     )
 )
@@ -70,13 +64,16 @@ app.include_router(
     routers.replacements.main(
         mongoDB.replacementsDocsCollection,
         mongoDB.groupsCollection,
+        mongoDB.callSchedulesCollection,
         security.security
     )
 )
 app.include_router(
     routers.group.main(
         mongoDB.groupsCollection,
-        security.security
+        security.security,
+        mongoDB.teachersCollection,
+        mongoDB.subjectsCollection
     )
 )
 # app.include_router(
@@ -86,7 +83,7 @@ app.include_router(
 #     )
 # )
 app.include_router(
-    routers.user.main(mongoDB.usersCollection, mongoDB.credentialCollection, security.security)
+    routers.user.main(mongoDB.usersCollection, mongoDB.credentialsCollection, security.security)
 )
 # No authorization cookie error processing
 # @app.exception_handler(authx.exceptions.MissingTokenError)

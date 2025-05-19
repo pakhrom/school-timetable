@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends, Response
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 from pymongo.errors import DuplicateKeyError
 from starlette.responses import RedirectResponse
 
@@ -14,7 +14,7 @@ from hashlib import sha256
 from authx import AuthX
 
 class PasswordRequestForm(BaseModel):
-    password: str
+    password: str = Field(min_length=10, max_length=50)
 
 def main(
         userCollection: Collection,

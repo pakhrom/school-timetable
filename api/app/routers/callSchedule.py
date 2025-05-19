@@ -23,7 +23,7 @@ def main(
         if JWTData.role != "admin":
             raise HTTPException(
                 status_code=403,
-                detail="Only admins can edit teachers"
+                detail="Only admins can edit callSchedules"
             )
         return True
 
@@ -62,21 +62,22 @@ def main(
         dependencies=[Depends(authorization)],
         response_model=str
     )
-    async def CreateOne(group: CallScheduleBase):
+    async def CreateOne(callSchedule: CallScheduleBase):
+
         response = callScheduleCollection.insert_one(processForDB(
-            baseObject=group,
+            baseObject=callSchedule,
             fullModel=CallScheduleFull
         ))
-        return ObjectId(response.inserted_id)
+        return str(response.inserted_id)
 
     @router.put(
         path="/{objId}",
         dependencies=[Depends(authorization)]
     )
-    async def UpdateOne(objId: str, group: CallScheduleBase):
+    async def UpdateOne(objId: str, callSchedule: CallScheduleBase):
         response = callScheduleCollection.update_one(
             {"_id": ObjectId(objId)},
-            {"$set": processForDB(group, CallScheduleFull)}
+            {"$set": processForDB(callSchedule, CallScheduleFull)}
         )
         if response.modified_count == 0:
             raise HTTPException(status_code=404, detail="CallSchedule not found")

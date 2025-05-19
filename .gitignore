@@ -1,8 +1,7 @@
-
-api/config.py
-api/config.py
+*.pyc
 /api/.idea
 /api/__pycache__
-api/app/config.py
-/api/__pycache__
-/api/__pycache__
+*/__pycache__
+api/secretsVariables.py
+/api/.run
+*/__pycache__

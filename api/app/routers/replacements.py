@@ -15,7 +15,8 @@ from .replacement import replacement
 def main(
         replacementsDocsCollection: Collection,
         groupsCollection: Collection,
-        security: AuthX
+        callSchedulesCollection: Collection,
+        security: AuthX,
 ) -> APIRouter:
 
     def authorization(
@@ -28,7 +29,7 @@ def main(
         if JWTData.role != "admin":
             raise HTTPException(
                 status_code=403,
-                detail="Only admins can edit teachers"
+                detail="Only admins can edit subjects"
             )
         return True
 
@@ -81,21 +82,31 @@ def main(
         response_model=str,
         dependencies=[Depends(authorization)]
     )
-    async def CreateOne(replacement: ReplacementsBase):
+    async def CreateOne(replacements: ReplacementsBase):
+        if not replacements.verify_dependencies(
+            callSchedulesCollection=callSchedulesCollection
+        ):
+            raise HTTPException(422, "Cant verify replacements, check data and try again")
         response = replacementsDocsCollection.insert_one(
-            ReplacementsFull(**replacement.model_dump()).model_dump(exclude={"objId"})
+            ReplacementsFull(**replacements.model_dump()).model_dump(exclude={"objId"})
         )
-        return int(response.inserted_id)
+        return str(response.inserted_id)
 
     @router.put(
         path="/{objId}",
         dependencies=[Depends(authorization)],
     )
     async def UpdateOne(objId: str, replacements: ReplacementsBase):
+        if not replacements.verify_dependencies(
+            callSchedulesCollection=callSchedulesCollection
+        ):
+            raise HTTPException(422, "Cant verify replacements, check data and try again")
         response = replacementsDocsCollection.update_one(
             {"_id": ObjectId(objId)},
             {"$set": processForDB(replacements, ReplacementsFull)}
         )
+        if response.modified_count == 0:
+            raise HTTPException(404, "Can`t find Replacements by ID")
 
         return {
             "details": f"Updated {response.modified_count} objects"

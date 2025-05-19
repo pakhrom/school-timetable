@@ -1,6 +1,10 @@
 import logging
 from enum import unique
+
+from anyio.to_process import current_default_process_limiter
+from bson import ObjectId
 from fastapi import HTTPException
+from typing import TypeVar, Callable
 
 import pymongo
 from pydantic import BaseModel
@@ -27,7 +31,7 @@ class DBLoad:
             )
 
             self.DB = client.TimetableProject
-            self.subjectCollection: Collection = self.DB["subjects"]
+            self.subjectsCollection: Collection = self.DB["subjects"]
             self.groupsCollection: Collection = self.DB["groups"]
             self.teachersCollection: Collection = self.DB["teachers"]
             self.replacementsDocsCollection: Collection = self.DB["replacementsDocs"]
@@ -37,20 +41,27 @@ class DBLoad:
             self.usersCollection: Collection = self.DB["users"]
             self.usersCollection.create_index("username", unique=True)
 
-            self.credentialCollection: Collection = self.DB["credentials"]
-            self.credentialCollection.create_index("username", unique=True)
+            self.credentialsCollection: Collection = self.DB["credentials"]
+            self.credentialsCollection.create_index("username", unique=True)
 
         except pymongo.mongo_client.ConnectionFailure as e:
             logger.error(
                 msg=f"Cant connect to mongoDB:\n{e}"
             )
 
-def getListDicts(collection: Collection, model, **kwargs) -> list:
+def getListDicts(
+        collection: Collection,
+        model,
+        filter: dict = (),
+        modelLambda: Callable = lambda x: x,
+        **kwargs,
+) -> list:
+
     response = [
-        model(
+        modelLambda(model(
             objId=str(element.pop("_id")),
             **element
-        ) for element in collection.find(**kwargs)
+        )) for element in collection.find(filter=filter, **kwargs)
     ]
     if len(response) == 0 and "filter" in kwargs.keys():
         raise HTTPException(404, f"Element {model.__name__} can`t be found")

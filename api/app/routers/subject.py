@@ -22,7 +22,7 @@ def main(
         if JWTData.role != "admin":
             raise HTTPException(
                 status_code=403,
-                detail="Only admins can edit teachers"
+                detail="Only admins can edit subjects"
             )
         return True
 
@@ -42,14 +42,14 @@ def main(
         )
 
     @router.get(
-        path="/{objId}",
+        path="/{id}",
         response_model=SubjectFull,
     )
-    async def GetOne(objId: str):
+    async def GetOne(id: str):
         return getListDicts(
             collection=subjectCollection,
             model=SubjectFull,
-            filter={"_id": ObjectId(objId)}
+            filter={"_id": ObjectId(id)}
         )[0]
 
     @router.post(
@@ -64,20 +64,27 @@ def main(
         return str(result.inserted_id)
 
     @router.put(
-        path="/{objId}",
+        path="/{id}",
         dependencies=[Depends(authorization)]
     )
-    async def UpdateOne(objId: str, subject: SubjectBase):
+    async def UpdateOne(id: str, subject: SubjectBase):
         subjectCollection.update_one(
-            {"_id": ObjectId(objId)},
+            {"_id": ObjectId(id)},
             {"$set": SubjectFull(**subject.model_dump()).model_dump(exclude={"objId"})}
         )
 
     @router.delete(
-        path="/{objId}",
+        path="/{id}",
         dependencies=[Depends(authorization)]
     )
-    async def DeleteOne(objId: str):
-        subjectCollection.delete_one({"_id": ObjectId(objId)})
+    async def DeleteOne(id: str):
+        subject: SubjectFull = getListDicts(
+            collection=subjectCollection,
+            model=SubjectFull,
+            filter={"_id": ObjectId(id)}
+        )[0]
+        if subject.groupsIds != []:
+            raise HTTPException(409, "Subject still connected to other objects")
+        subjectCollection.delete_one({"_id": ObjectId(id)})
 
     return router

@@ -79,6 +79,13 @@ def main(
         dependencies=[Depends(authorization)]
     )
     async def DeleteOne(id: str):
+        teacher: TeacherFull = getListDicts(
+            collection=teachersCollection,
+            model= TeacherFull,
+            filter={"_id": ObjectId(id)}
+        )[0]
+        if teacher.groupsIds != []:
+            raise HTTPException(409, "Teacher still connected to other objects")
         result = teachersCollection.delete_one({"_id": ObjectId(id)})
         if result.deleted_count == 0:
             raise HTTPException(status_code=404, detail="Teacher not found")
