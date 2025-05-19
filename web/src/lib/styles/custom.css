@@ -23,6 +23,22 @@
 	color: var(--pico-primary-hover);
 }
 
+.form-message {
+	display: flex;
+	align-items: center;
+	gap: 0.5em;
+
+	margin-top: 1em;
+}
+
+.form-message.error {
+	color: var(--pico-del-color);
+}
+
+.form-message.success {
+	color: var(--pico-ins-color);
+}
+
 a {
 	display: inline-flex;
 	align-items: center;
