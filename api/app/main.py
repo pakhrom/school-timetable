@@ -1,5 +1,7 @@
+import logging
+
 import authx.exceptions
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer
 from starlette.responses import PlainTextResponse
@@ -14,7 +16,7 @@ import app.routers as routers
 from pydantic import BaseModel
 from bson import ObjectId
 
-app = FastAPI(title="api", version="v0.1.0.0")
+app = FastAPI(title="api", version="v0.1.0.1")
 
 app.add_middleware(
     CORSMiddleware,
@@ -99,6 +101,11 @@ async def OldCookie(request, exc):
         str(exc), status_code=401
     )
 
+
+# @app.exception_handler(422)
+# async def TokenExpiered(request, exc):
+#     logger.info(f"{str(exc)}\n-{type(exc)}")
+
 if __name__ == "__main__":
     uvicorn.run(
         "main:app",
@@ -106,3 +113,4 @@ if __name__ == "__main__":
         reload=True,
         port=8080
     )
+    # logger = logging.getLogger("uvicorn.debug")

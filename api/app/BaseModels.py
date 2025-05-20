@@ -1,22 +1,31 @@
 import datetime
 import logging
+from http.client import HTTPException
 from typing import Optional, Annotated
-from pydantic import BaseModel, field_validator, ValidationError, Field, model_validator
+
+import bson.errors
+from pydantic import BaseModel, field_validator, ValidationError, Field, model_validator, BeforeValidator
 from enum import Enum
 # import hashlib
 from pymongo.synchronous.collection import Collection
 from bson import ObjectId
 
+def isValidObjectId(value: str | ObjectId) -> str:
+    if not ObjectId.is_valid(value):
+        raise ValueError("Invalid ObjectId")
+    return str(value)
+
+PyObjectId = Annotated[str, BeforeValidator(isValidObjectId)]
 
 class SubjectBase(BaseModel):
-    shortName: str = Field(min_length=1, max_length=10)
+    shortName: str = Field(max_length=10)
     fullName: str = Field(min_length=1, max_length=20)
     optional: bool = False
-    groupsIds: list[str] = []
+    groupsIds: list[PyObjectId] = []
 
 class GroupBase(BaseModel):
-    subjectId: str = Field(min_length=24, max_length=24)
-    teacherId: str = Field(min_length=24, max_length=24)
+    subjectId: PyObjectId
+    teacherId: PyObjectId
     cabinet: str = Field(min_length=3, max_length=20)
     attendPeriodicity: int = Field(gt=0)
 
@@ -24,17 +33,20 @@ class GroupBase(BaseModel):
     def pairGroup(
             cls,
             collection: Collection | list[Collection],
-            addId: str,
-            selectId: str | list[str],
+            addId: PyObjectId,
+            selectId: PyObjectId | list[PyObjectId],
     ):
         def pairOneElement(
                 collection: Collection,
-                addId: str,
-                selectId: str,
+                addId: PyObjectId,
+                selectId: PyObjectId,
         ):
-            pairedGroups: list[str] = collection.find_one(
-                filter={"_id": ObjectId(selectId)}
-            )["groupsIds"]
+            try:
+                pairedGroups: list[PyObjectId] = collection.find_one(
+                    filter={"_id": ObjectId(selectId)}
+                )["groupsIds"]
+            except KeyError:
+                raise HTTPException(404, f"Subject with id: {selectId} cant be found")
 
             pairedGroups.append(addId)
 
@@ -46,7 +58,7 @@ class GroupBase(BaseModel):
                 }}
             )
 
-        if type(selectId) == list and type(collection) == list:
+        if isinstance(selectId, list)  and isinstance(collection, list):
             for oneSelectId, oneCollection in zip(selectId, collection):
                 pairOneElement(
                     collection=oneCollection,
@@ -54,7 +66,7 @@ class GroupBase(BaseModel):
                     selectId=oneSelectId
                 )
 
-        elif type(selectId) == str and type(collection) == Collection:
+        elif isinstance(selectId, str) and isinstance(collection, Collection):
             pairOneElement(
                 collection=collection,
                 addId=addId,
@@ -69,17 +81,20 @@ class GroupBase(BaseModel):
     def unpairGroup(
             cls,
             collection: Collection | list[Collection],
-            delId: str,
-            selectId: str | list[str],
+            delId: PyObjectId,
+            selectId: PyObjectId | list[PyObjectId],
     ):
         def unpairOneElement(
                 collection: Collection,
-                delId: str,
-                selectId: str,
+                delId: PyObjectId,
+                selectId: PyObjectId,
         ):
-            pairedGroups: list[str] = collection.find_one(
-                filter={"_id": ObjectId(selectId)}
-            )["groupsIds"]
+            try:
+                pairedGroups: list[PyObjectId] = collection.find_one(
+                    filter={"_id": ObjectId(selectId)}
+                )["groupsIds"]
+            except KeyError:
+                raise HTTPException(404, f"Subject with id: {selectId} cant be found")
 
             pairedGroups.remove(delId)
 
@@ -91,7 +106,7 @@ class GroupBase(BaseModel):
                 }}
             )
 
-        if type(selectId) == list and type(collection) == list:
+        if isinstance(selectId, list)  and isinstance(collection, list):
             for oneSelectId, oneCollection in zip(selectId, collection):
                 unpairOneElement(
                     collection=oneCollection,
@@ -99,7 +114,7 @@ class GroupBase(BaseModel):
                     selectId=oneSelectId
                 )
 
-        elif type(selectId) == str and type(collection) == Collection:
+        elif isinstance(selectId, str)  and isinstance(collection, Collection):
             unpairOneElement(
                 collection=collection,
                 delId=delId,
@@ -115,13 +130,16 @@ class GroupBase(BaseModel):
             subjectsCollection: Collection,
             teacherCollection: Collection,
     ):
-        from app.FullModels import SubjectFull, TeacherFull
-        return self.model_dump(
-            exclude={"subjectId", "teacherId"}
-        ) | {
-            "subject": SubjectFull(**subjectsCollection.find_one({"_id": ObjectId(self.subjectId)})),
-            "teacher": TeacherFull(**teacherCollection.find_one({"_id": ObjectId(self.teacherId)}))
-        }
+        try:
+            from app.FullModels import SubjectFull, TeacherFull
+            return self.model_dump(
+                exclude={"subjectId", "teacherId"}
+            ) | {
+                "subject": SubjectFull(**subjectsCollection.find_one({"_id": ObjectId(self.subjectId)})),
+                "teacher": TeacherFull(**teacherCollection.find_one({"_id": ObjectId(self.teacherId)}))
+            }
+        except TypeError:
+            raise HTTPException(422, f"Object {self.__name__} with id: {self.model_fields()['objId']}")
 
     def verify_dependencies(
             self,
@@ -151,13 +169,13 @@ class FullName(BaseModel):
 class TeacherBase(BaseModel):
     gender: Gender
     fullname: FullName
-    groupsIds: list[Annotated[str, Field(min_length=24, max_length=24)]] = []
+    groupsIds: list[PyObjectId] = list()
 
 class Replacement(BaseModel):
     lesson: int = Field(gt=0, lt=13)
     reason: Optional[str] = Field(max_length=20)
-    oldGroupId: str = Field(min_length=24, max_length=24)
-    newGroupId: Optional[str] = Field(min_length=24, max_length=24)
+    oldGroupId: PyObjectId
+    newGroupId: Optional[PyObjectId]
 
     def verify_dependencies(
             self,
@@ -179,7 +197,7 @@ class Replacement(BaseModel):
 class ReplacementsBase(BaseModel):
     date: datetime.datetime
     modifiedGroups: Optional[list[Replacement]] = []
-    callScheduleId: Optional[str] = Field(min_length=24, max_length=24)
+    callScheduleId: Optional[PyObjectId]
 
     def verify_dependencies(
             self,
@@ -194,10 +212,10 @@ class ReplacementsBase(BaseModel):
 
 class TimetableBase(BaseModel):
     className: str = Field(min_length=2, max_length=10)
-    groupsIds: list[Annotated[str, Field(min_length=24, max_length=24)]] = []
+    groupsIds: list[PyObjectId] = list()
     week: list[Annotated[
         list[Annotated[list[
-            Annotated[str, Field(min_length=24, max_length=24)]  # groupId
+            PyObjectId  # groupId
         ], Field(min_length=0, max_length=13)]
         ], Field(min_length=6, max_length=7)
     ]]
@@ -236,9 +254,9 @@ class UserRole(str, Enum):
 
 class UserBase(BaseModel):
     displayName: str
-    username: str = Field(max_length=18)
+    username: str = Field(min_length=1, max_length=18)
     role: UserRole
-    connectedTeacher: Optional[str] = Field(min_length=24, max_length=24)
+    connectedTeacher: Optional[PyObjectId]
 
     @field_validator("connectedTeacher")
     def connectedTeacherMustbeSetted(cls, value, values: dict):
