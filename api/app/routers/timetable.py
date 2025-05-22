@@ -111,7 +111,7 @@ def main(
     )
     async def CreateOne(timetable: TimetableBase):
         try:
-            if timetable.groupsIds:
+            if timetable.week:
                 if not timetable.verify_dependencies(
                     groupsCollection=groupsCollection
                 ):

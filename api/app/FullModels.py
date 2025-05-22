@@ -84,27 +84,32 @@ class CredentialFull(bm.CredentialBase, _AllServerBase):
 
 class TimetablePrintOut(_AllServerBase):
     className: str = Field(min_length=2, max_length=10)
-    week: list[Annotated[
-        list[Annotated[list[
-            GroupFull
-        ], Field(min_length=0, max_length=13)]
-        ], Field(min_length=6, max_length=7)
-    ]]
+    week: Annotated[
+        list[
+            Annotated[
+                list[Optional[list[GroupFull]]],  # Список уроков (0-13 элементов)
+                Field(min_length=0, max_length=13)
+            ]
+        ],
+        Field(min_length=5, max_length=7)  # Неделя (5-7 дней)
+    ]
 
 class TimetableFull(bm.TimetableBase, _AllServerBase):
     def printOut(
             self,
             groupsCollection: Collection,
     ) -> TimetablePrintOut:
+        logger = logging.getLogger("uvicorn.debug")
+        logger.info(self.week[0][0][0])
         week = [
             [
                 [
-                    GroupFull(**groupsCollection.find_one({"_id": ObjectId(groupId)}))
+                    GroupFull(**groupsCollection.find_one({"_id": ObjectId(groupId)})) if groupId else None
                     for groupId in lesson
-                ]
+                ] if lesson else lesson
                 for lesson in day
             ]
-            for day in self.weekIds
+            for day in self.week
         ]
         return TimetablePrintOut(
             objId = self.objId,

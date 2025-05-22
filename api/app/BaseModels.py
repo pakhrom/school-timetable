@@ -4,7 +4,8 @@ from http.client import HTTPException
 from typing import Optional, Annotated
 
 import bson.errors
-from pydantic import BaseModel, field_validator, ValidationError, Field, model_validator, BeforeValidator
+from pydantic import BaseModel, field_validator, ValidationError, Field, model_validator, BeforeValidator, \
+    AfterValidator
 from enum import Enum
 # import hashlib
 from pymongo.synchronous.collection import Collection
@@ -15,7 +16,7 @@ def isValidObjectId(value: str | ObjectId) -> str:
         raise ValueError("Invalid ObjectId")
     return str(value)
 
-PyObjectId = Annotated[str, BeforeValidator(isValidObjectId)]
+PyObjectId = Annotated[str, BeforeValidator(isValidObjectId), Field(min_length=24, max_length=24)]
 
 class SubjectBase(BaseModel):
     shortName: str = Field(max_length=10)
@@ -196,13 +197,16 @@ class ReplacementsBase(BaseModel):
 
 class TimetableBase(BaseModel):
     className: str = Field(min_length=2, max_length=10)
-    groupsIds: list[PyObjectId] = list()
-    week: list[Annotated[
-        list[Annotated[list[
-            PyObjectId  # groupId
-        ], Field(min_length=0, max_length=13)]
-        ], Field(min_length=6, max_length=7)
-    ]]
+    groupsIds: list[PyObjectId | None] = list()
+    week: Annotated[
+        list[
+            Annotated[
+                list[Optional[list[PyObjectId]]],  # Список уроков (0-13 элементов)
+                Field(min_length=0, max_length=13)
+            ]
+        ],
+        Field(min_length=5, max_length=7)  # Неделя (6-7 дней)
+    ]
 
     @model_validator(mode="after")
     def groups_is_equal(
@@ -212,11 +216,12 @@ class TimetableBase(BaseModel):
         uniqueGroups = set()
         for day in self.week:
             for lesson in day:
+                if not lesson:
+                    continue
                 uniqueGroups.update(lesson)
 
-        if not uniqueGroups == set(self.groupsIds):
-            # logger.debug("Listed groups not the same as in the week")
-            self.groupsIds = list(uniqueGroups)
+        self.groupsIds = list(uniqueGroups)
+        return self
 
     def verify_dependencies(
             self,
