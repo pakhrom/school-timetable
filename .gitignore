@@ -5,3 +5,5 @@
 api/secretsVariables.py
 /api/.run
 */__pycache__
+api/app/__pycache__/FullModels.cpython-313.pyc
+*.pyc
