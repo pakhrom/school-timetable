@@ -1,12 +1,12 @@
 from pydantic import BaseModel, Field
-from authx import AuthXConfig, AuthX
+from authx import AuthXConfig, AuthX, RequestToken
 from pymongo.collection import Collection
-from fastapi import APIRouter, HTTPException, Response
+from fastapi import APIRouter, HTTPException, Response, Header
 
-from app.BaseModels import CredentialBase
+from app.BaseModels import CredentialBase, UserRole
 from app.FullModels import UserFull
 from hashlib import sha256
-from typing import TypedDict
+from typing import TypedDict, Union
 
 class Security(BaseModel):
     security: AuthX
@@ -108,5 +108,19 @@ def createRouter(
         # response = Response()
         # response.set_cookie(security.config.JWT_ACCESS_COOKIE_NAME, token)
         return LoginResponse(access_token=token)
+
+    @router.post(
+        path="/verify",
+        response_model=Union[UserRole, str]
+    )
+    async def verify_token(token: str = Header()):
+        try:
+            data = security.security.verify_token(RequestToken(
+                token=token,
+                location="headers"
+            ))
+        except:
+            raise HTTPException(401, "Access token is not valid")
+        return UserRole(data.role)
 
     return router

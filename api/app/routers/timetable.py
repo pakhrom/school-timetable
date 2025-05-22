@@ -45,16 +45,15 @@ def main(
 
     @router.get(
         path="/{objId}",
-        response_model=TimetableFull,
         description="Get one object Subject by objId"
     )
     async def GetOne(objId: str):
         try:
-            response = getListDicts(
+            response:TimetableFull = getListDicts(
                 collection=timetablesCollection,
                 model=TimetableFull,
-                filter={"_id": ObjectId(objId)})
-            return response[0]
+                filter={"_id": ObjectId(objId)})[0]
+            return response.printOut(groupsCollection=groupsCollection)
         except IndexError:
             raise IndexError(f"Obj with Id: {objId} can`t be found")
 
