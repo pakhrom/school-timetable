@@ -2,7 +2,8 @@
 # from typing import Optional
 import logging
 
-from pydantic import BaseModel, BeforeValidator, Field, AliasChoices, ValidationError
+import bson.errors
+from pydantic import BaseModel, Field, AliasChoices, ValidationError
 # from enum import Enum
 import app.BaseModels as bm
 import datetime
@@ -11,13 +12,12 @@ from bson import ObjectId
 from pymongo.synchronous.collection import Collection
 
 
-PyObjectId = Annotated[str, BeforeValidator(str)]
 
 class _AllServerBase(BaseModel):
     class Config:
         arbitrary_types_allowed = True
 
-    objId: Optional[PyObjectId] | Optional[str] = Field(
+    objId: Optional[bm.PyObjectId] = Field(
         default=None,
         validation_alias=AliasChoices('objId', '_id'),
         serialization_alias='objId'
@@ -44,7 +44,6 @@ class _AllServerBase(BaseModel):
             return False
 
         return True
-
 
 
 class TeacherFull(bm.TeacherBase, _AllServerBase):

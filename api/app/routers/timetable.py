@@ -111,10 +111,11 @@ def main(
     )
     async def CreateOne(timetable: TimetableBase):
         try:
-            if not timetable.verify_dependencies(
-                groupsCollection=groupsCollection
-            ):
-                raise HTTPException(422, "Cant verify timetable")
+            if timetable.groupsIds:
+                if not timetable.verify_dependencies(
+                    groupsCollection=groupsCollection
+                ):
+                    raise HTTPException(422, "Cant verify timetable")
             result = timetablesCollection.insert_one(
                 TimetableFull(**timetable.model_dump()).model_dump(exclude={"objId"})
             )
