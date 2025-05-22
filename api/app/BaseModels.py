@@ -1,7 +1,7 @@
 import datetime
 import logging
 from typing import Optional, Annotated
-from pydantic import BaseModel, field_validator, ValidationError, Field, model_validator
+from pydantic import BaseModel, field_validator, ValidationError, Field, model_validator, AliasChoices
 from enum import Enum
 # import hashlib
 from pymongo.synchronous.collection import Collection
@@ -9,7 +9,7 @@ from bson import ObjectId
 
 
 class SubjectBase(BaseModel):
-    shortName: str = Field(min_length=1, max_length=10)
+    shortName: str = Field(max_length=10)
     fullName: str = Field(min_length=1, max_length=20)
     optional: bool = False
     groupsIds: list[str] = []
@@ -182,12 +182,12 @@ class ReplacementsBase(BaseModel):
 class TimetableBase(BaseModel):
     className: str = Field(min_length=2, max_length=10)
     groupsIds: list[Annotated[str, Field(min_length=24, max_length=24)]] = []
-    weekIds: list[Annotated[
+    weekIds: Annotated[
         list[Annotated[list[
             Annotated[str, Field(min_length=24, max_length=24)]  # groupId
         ], Field(min_length=0, max_length=13)]
-        ], Field(min_length=6, max_length=7)
-    ]]
+        ], Field(min_length=6, max_length=7, validation_alias=AliasChoices("weeksIds", "week"))
+    ]
 
     @model_validator(mode="after")
     def groups_is_equal(
