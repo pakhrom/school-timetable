@@ -78,14 +78,19 @@ app.include_router(
         mongoDB.subjectsCollection
     )
 )
-# app.include_router(
-#     routers.callSchedule.main(
-#         mongoDB.callSchedulesCollection,
-#         security.security
-#     )
-# )
 app.include_router(
-    routers.user.main(mongoDB.usersCollection, mongoDB.credentialsCollection, security.security)
+    routers.callSchedule.main(
+        mongoDB.callSchedulesCollection,
+        security.security
+    )
+)
+app.include_router(
+    routers.user.main(
+        userCollection=mongoDB.usersCollection,
+        credentialCollection=mongoDB.credentialsCollection,
+        security=security.security,
+        teachersCollection=mongoDB.teachersCollection,
+    )
 )
 # No authorization cookie error processing
 # @app.exception_handler(authx.exceptions.MissingTokenError)

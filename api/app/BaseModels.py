@@ -247,11 +247,25 @@ class UserBase(BaseModel):
     role: UserRole
     connectedTeacher: Optional[PyObjectId]
 
+    def verify_teacher(
+            self,
+            teachersCollection: Collection
+    ) -> bool:
+        if self.role != "teacher":
+            return True
+        if not teachersCollection.find_one({"_id": ObjectId(self.connectedTeacher)}):
+            return False
+        return True
+
     @field_validator("connectedTeacher")
     def connectedTeacherMustbeSetted(cls, value, values: dict):
         if value == UserRole.teacher and not values["connectedTeacher"]:
             raise ValidationError
+        return value
 
 class CredentialBase(BaseModel):
     username: str
     passwordHashed: str
+
+class ResponseCount(BaseModel):
+    count: int
