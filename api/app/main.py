@@ -116,6 +116,6 @@ if __name__ == "__main__":
         "main:app",
         host="0.0.0.0",
         reload=True,
-        port=8080
+        port=8006
     )
     # logger = logging.getLogger("uvicorn.debug")
